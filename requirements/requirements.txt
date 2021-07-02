@@ -1,0 +1,2 @@
+requests-cache
+neon_utils @ git+https://github.com/neongeckocom/neon-skill-utils
