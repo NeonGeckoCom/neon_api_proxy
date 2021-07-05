@@ -96,26 +96,76 @@ class TestWolframAPI(unittest.TestCase):
             self.api._build_query_string(**INVALID_QUERY)
 
     def test_query_full_api(self):
-        result = self.api.query_api(FULL_QUERY)
-        self.assertIsInstance(result, str)
+        result = self.api._query_api(FULL_QUERY)
+        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result["content"].decode(result["encoding"]), str)
 
     def test_query_simple_api(self):
-        result = self.api.query_api(SIMPLE_QUERY)
-        self.assertIsInstance(result, bytes)
+        result = self.api._query_api(SIMPLE_QUERY)
+        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result["content"], bytes)
+        self.assertIsNone(result["encoding"])
 
     def test_query_spoken_api(self):
-        result = self.api.query_api(SPOKEN_QUERY)
-        self.assertIsInstance(result, str)
+        result = self.api._query_api(SPOKEN_QUERY)
+        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result["content"].decode(result["encoding"]), str)
 
     def test_query_short_api(self):
-        result = self.api.query_api(SHORT_QUERY)
-        self.assertIsInstance(result, str)
+        result = self.api._query_api(SHORT_QUERY)
+        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result["content"].decode(result["encoding"]), str)
 
     def test_query_recognize_api(self):
-        result = self.api.query_api(RECOGNIZE_QUERY)
-        self.assertIsInstance(result, str)
+        result = self.api._query_api(RECOGNIZE_QUERY)
+        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result["content"].decode(result["encoding"]), str)
 
-    # TODO: Test it all together DM
+    def test_handle_query_invalid_type(self):
+        resp = self.api.handle_query(api="basic")
+        self.assertEqual(resp["status_code"], -1)
+
+    def test_handle_query_invalid_query(self):
+        resp = self.api.handle_query(api="simple")
+        self.assertEqual(resp["status_code"], -1)
+
+    def test_handle_query_invalid_response(self):
+        resp = self.api.handle_query(api="short",
+                                     query="i like",
+                                     units="metric",
+                                     ip="50.47.129.133")
+        self.assertIsInstance(resp, dict)
+        self.assertEqual(resp["status_code"], 501)
+
+    def test_handle_query_invalid_key(self):
+        from copy import deepcopy
+        valid_key = deepcopy(self.api._api_key)
+        self.api._api_key = ""
+
+        resp = self.api.handle_query(query="how far away is mars")
+        self.assertIsInstance(resp, dict)
+        self.assertEqual(resp["status_code"], 403)
+        self.assertIsInstance(resp["content"], bytes)
+        self.assertIsInstance(resp["encoding"], str)
+        self.assertIsInstance(resp["content"].decode(resp["encoding"]), str)
+
+        self.api._api_key = valid_key
+
+    def test_handle_query_valid(self):
+        resp = self.api.handle_query(api="short",
+                                     query="how far away is the moon?",
+                                     units="metric",
+                                     ip="50.47.129.133")
+        self.assertIsInstance(resp, dict)
+        self.assertEqual(resp["status_code"], 200)
+        self.assertIsInstance(resp["content"], bytes)
+        self.assertIsInstance(resp["encoding"], str)
+        self.assertIsInstance(resp["content"].decode(resp["encoding"]), str)
+        cached = self.api.handle_query(api="short",
+                                       query="how far away is the moon?",
+                                       units="metric",
+                                       ip="50.47.129.133")
+        self.assertEqual(resp, cached)
 
 
 if __name__ == '__main__':

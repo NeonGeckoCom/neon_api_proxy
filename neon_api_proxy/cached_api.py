@@ -17,7 +17,6 @@
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
-import os
 import requests_cache as requests
 
 from abc import abstractmethod
@@ -29,10 +28,9 @@ class CachedAPI:
         self.session = requests.CachedSession(backend='memory', cache_name=cache_name)
 
     @abstractmethod
-    def query_api(self, query: str):
+    def handle_query(self, **kwargs) -> dict:
         """
-        Override in subclasses to query a remote API.
-        :param query: query string to parse into URL template
-        :return:
+        Handles an incoming query and provides a response
+        :param kwargs: keyword arguments as required by APIs
+        :return: dict response data
         """
-        pass

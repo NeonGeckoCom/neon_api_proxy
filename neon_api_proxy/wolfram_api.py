@@ -20,13 +20,15 @@
 import itertools
 import urllib.parse
 from enum import Enum
-from typing import Union
 
 from neon_api_proxy.cached_api import CachedAPI
-from neon_api_proxy.exceptions import *
+from neon_utils.log_utils import LOG
+from neon_utils.authentication_utils import find_neon_wolfram_key
 
 
 class QueryUrl(Enum):
+    def __str__(self):
+        return self.value
     SIMPLE = "http://api.wolframalpha.com/v2/simple"
     SHORT = "http://api.wolframalpha.com/v2/result"
     SPOKEN = "http://api.wolframalpha.com/v2/spoken"
@@ -42,23 +44,38 @@ class WolframAPI(CachedAPI):
 
     def __init__(self):
         super().__init__("wolfram")
-        self._api_key = ""  # TODO: Method to get this DM
+        self._api_key = find_neon_wolfram_key()
 
-    def _build_query_url(self, query_type: QueryUrl, query_url: str):
+    def _build_query_url(self, query_type: QueryUrl, query_arg: str) -> str:
+        """
+        Constructs a valid URL for the given query_type and query_arg
+        :param query_type: QueryUrl to query
+        :param query_arg: string args relating to question
+        :return: valid URL to query for a response
+        """
         if not query_type:
             raise ValueError(f"query_type not defined!")
-        if not query_url:
+        if not query_arg:
             raise ValueError(f"query_url not defined!")
         if not isinstance(query_type, QueryUrl):
-            raise TypeError(f"Not a QueryUrl: {query_url}")
-        if not isinstance(query_url, str):
-            raise TypeError(f"Not a string: {query_url}")
+            raise TypeError(f"Not a QueryUrl: {query_arg}")
+        if not isinstance(query_arg, str):
+            raise TypeError(f"Not a string: {query_arg}")
         if query_type == QueryUrl.RECONGNIZE:
-            query_url = f"{query_url}&mode=Default"
-        return f"{query_type}?appid={self._api_key}&{query_url}"
+            query_arg = f"{query_arg}&mode=Default"
+        return f"{query_type}?appid={self._api_key}&{query_arg}"
 
     @staticmethod
-    def _build_query_string(**kwargs):
+    def _build_query_string(**kwargs) -> str:
+        """
+        Constructs a valid query string with the given arguments
+        :param kwargs:
+          'query' - string query to ask Wolfram|Alpha
+          'units' - optional string "metric" or "nonmetric"
+          'lat'+'lng' optional float or string lat/lng (separate keys)
+          'ip' optional string origin IP Address for geolocation
+        :return: URL encoded query string used to build a request URL
+        """
         if not kwargs.get("query"):
             raise ValueError(f"No query in request: {kwargs}")
         query_params = dict()
@@ -76,7 +93,7 @@ class WolframAPI(CachedAPI):
         query_str = urllib.parse.urlencode(tuple(query_data))
         return query_str
 
-    def handle_query(self, **kwargs) -> Union[str, bytes]:
+    def handle_query(self, **kwargs) -> dict:
         """
         Handles an incoming query and provides a response
         :param kwargs:
@@ -85,7 +102,7 @@ class WolframAPI(CachedAPI):
           'units' - optional string "metric" or "nonmetric"
           'lat'+'lng' optional float or string lat/lng (separate keys)
           'ip' optional string origin IP Address for geolocation
-        :return: string response, bytes for QueryUrl.SIMPLE
+        :return: dict containing `status_code`, `content`, `encoding` from URL response
         """
         api = kwargs.get("api")
         if not api:
@@ -103,17 +120,29 @@ class WolframAPI(CachedAPI):
         elif api == "conversation":
             query_type = QueryUrl.CONVERSATION
         else:
-            raise ValueError(f"Unknown api requested: {api}")
+            return {"status_code": -1,
+                    "content": f"Unknown api requested: {api}",
+                    "encoding": None}
 
-        query_str = self._build_query_string(**kwargs)
-        return self.query_api(self._build_query_url(query_type, query_str))
+        try:
+            query_str = self._build_query_string(**kwargs)
+            return self._query_api(self._build_query_url(query_type, query_str))
+        except Exception as e:
+            return {"status_code": -1,
+                    "content": repr(e),
+                    "encoding": None}
 
-    def query_api(self, query: str):
+    def _query_api(self, query: str) -> dict:
+        """
+        Queries the Wolfram|Alpha API and returns a dict with the status, content, and encoding
+        :param query: URL to query
+        :return: dict response containing: `status_code`, `content`, and `encoding`
+        """
         result = self.session.get(query)
-        if result.status_code == 200:
-            try:
-                return result.content.decode("utf-8")
-            except UnicodeDecodeError:
-                return result.content
-        else:
-            raise APIError("Non-success Status Code Returned!", result.status_code)
+        if not result.ok:
+            # 501 = Wolfram couldn't understand
+            # 403 = Invalid API Key Provided
+            LOG.warning(f"API Query error ({result.status_code}): {query}")
+        return {"status_code": result.status_code,
+                "content": result.content,
+                "encoding": result.encoding}

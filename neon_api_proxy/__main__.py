@@ -20,6 +20,7 @@
 """
 TODO: Do something here to listen for incoming API requests and route them to the appropriate proxy
 In general, requests will contain an API identifier (like "wolfram" or "openweathermap" and some arbitrary key/val data
-The relevant API class should receive the data and return some arbitrary data back (str, bytes, dict) which should be
-served back to the client.
+The relevant API class should receive the data and return some arbitrary data back (dict) which should be
+served back to the client. For http requests, `status_code`, `content`, and `encoding` params should be included in
+returns.
 """
