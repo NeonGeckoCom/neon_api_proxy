@@ -104,7 +104,7 @@ class TestWolframAPI(unittest.TestCase):
         result = self.api._query_api(SIMPLE_QUERY)
         self.assertIsInstance(result, dict)
         self.assertIsInstance(result["content"], bytes)
-        self.assertIsNone(result["encoding"])
+        self.assertIsNone(result["encoding"], result["content"].decode(result["encoding"]))
 
     def test_query_spoken_api(self):
         result = self.api._query_api(SPOKEN_QUERY)
