@@ -20,12 +20,15 @@
 import requests_cache as requests
 
 from abc import abstractmethod
+from requests.adapters import HTTPAdapter
 
 
 class CachedAPI:
     def __init__(self, cache_name):
         # TODO: Setup a database for this
         self.session = requests.CachedSession(backend='memory', cache_name=cache_name)
+        self.session.mount('http://', HTTPAdapter(max_retries=8))
+        self.session.mount('https://', HTTPAdapter(max_retries=8))
 
     @abstractmethod
     def handle_query(self, **kwargs) -> dict:
