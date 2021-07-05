@@ -32,16 +32,16 @@ class TestCachedAPI(unittest.TestCase):
 
     def test_cached_request(self):
         url = "https://neon.ai"
-        res = self.api.session.get(url)
-        cached = self.api.session.get(url)
+        res = self.api.session.get(url, timeout=10)
+        cached = self.api.session.get(url, timeout=10)
         self.assertTrue(cached.from_cache)
         self.assertEqual(res.content, cached.content)
 
     def test_request_no_cache(self):
         url = "https://neon.ai"
-        res = self.api.session.get(url)
+        res = self.api.session.get(url, timeout=10)
         with self.api.session.cache_disabled():
-            cached = self.api.session.get(url)
+            cached = self.api.session.get(url, timeout=10)
             self.assertFalse(cached.from_cache)
         self.assertEqual(res.content, cached.content)
 
