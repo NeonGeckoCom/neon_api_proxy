@@ -22,6 +22,7 @@ import urllib.parse
 from enum import Enum
 from neon_api_proxy.cached_api import CachedAPI
 from neon_utils.log_utils import LOG
+from neon_utils.authentication_utils import find_neon_alpha_vantage_key
 
 
 class QueryUrl(Enum):
@@ -36,9 +37,9 @@ class AlphaVantageAPI(CachedAPI):
     API for querying Alpha Vantage.
     """
 
-    def __init__(self):
-        super().__init__("alphavantage")
-        self._api_key = "V27C6HB4CW5CBU7H"
+    def __init__(self, api_key: str = None):
+        super().__init__("alpha_vantage")
+        self._api_key = api_key or find_neon_alpha_vantage_key()
         self.preferred_market = "United States"
 
     def _search_symbol(self, query: str) -> dict:

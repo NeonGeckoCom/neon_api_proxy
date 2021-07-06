@@ -42,9 +42,9 @@ class WolframAPI(CachedAPI):
     API for querying Wolfram|Alpha.
     """
 
-    def __init__(self):
+    def __init__(self, api_key: str = None):
         super().__init__("wolfram")
-        self._api_key = find_neon_wolfram_key()
+        self._api_key = api_key or find_neon_wolfram_key()
         self.session.allowable_codes = (200, 501)
 
     def _build_query_url(self, query_type: QueryUrl, query_arg: str) -> str:
