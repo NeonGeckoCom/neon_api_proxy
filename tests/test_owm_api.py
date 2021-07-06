@@ -40,8 +40,8 @@ VALID_QUERY = {"lat": "47.6769",
                "lng": "-122.2060",
                "units": "imperial"}
 
-VALID_QUERY_NO_UNITS =  {"lat": "47.6769",
-                         "lng": "-122.2060"}
+VALID_QUERY_NO_UNITS = {"lat": "47.6769",
+                        "lng": "-122.2060"}
 
 INVALID_QUERY = {}
 
@@ -95,7 +95,6 @@ class TestOpenWeatherAPI(unittest.TestCase):
         resp = self.api.handle_query(**INVALID_QUERY)
         self.assertIsInstance(resp, dict)
         self.assertNotEqual(resp["status_code"], 200)
-        self.assertEqual(resp["encoding"], "utf-8")
 
 
 if __name__ == '__main__':
