@@ -16,7 +16,7 @@
 # Specialized conversational reconveyance options from Conversation Processing Intelligence Corp.
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
-
+import json
 import os
 import sys
 import unittest
@@ -84,12 +84,14 @@ class TestOpenWeatherAPI(unittest.TestCase):
         self.assertIsInstance(resp, dict)
         self.assertEqual(resp["status_code"], 200)
         self.assertEqual(resp["encoding"], "utf-8")
+        self.assertIsInstance(json.loads(resp["content"]), dict)
 
     def test_handle_query_valid_no_units(self):
         resp = self.api.handle_query(**VALID_QUERY_NO_UNITS)
         self.assertIsInstance(resp, dict)
         self.assertEqual(resp["status_code"], 200)
         self.assertEqual(resp["encoding"], "utf-8")
+        self.assertIsInstance(json.loads(resp["content"]), dict)
 
     def test_handle_query_invalid(self):
         resp = self.api.handle_query(**INVALID_QUERY)
