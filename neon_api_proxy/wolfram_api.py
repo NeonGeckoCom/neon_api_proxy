@@ -17,13 +17,12 @@
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
-import itertools
 import urllib.parse
-from enum import Enum
 
-from neon_api_proxy.cached_api import CachedAPI
+from enum import Enum
 from neon_utils.log_utils import LOG
 from neon_utils.authentication_utils import find_neon_wolfram_key
+from neon_api_proxy.cached_api import CachedAPI
 
 
 class QueryUrl(Enum):
@@ -33,7 +32,7 @@ class QueryUrl(Enum):
     SHORT = "http://api.wolframalpha.com/v2/result"
     SPOKEN = "http://api.wolframalpha.com/v2/spoken"
     FULL = "http://api.wolframalpha.com/v2/query"
-    RECONGNIZE = "http://www.wolframalpha.com/queryrecognizer/query.jsp"
+    RECOGNIZE = "http://www.wolframalpha.com/queryrecognizer/query.jsp"
     CONVERSATION = "http://api.wolframalpha.com/v1/conversation.jsp"
 
 
@@ -62,7 +61,7 @@ class WolframAPI(CachedAPI):
             raise TypeError(f"Not a QueryUrl: {query_arg}")
         if not isinstance(query_arg, str):
             raise TypeError(f"Not a string: {query_arg}")
-        if query_type == QueryUrl.RECONGNIZE:
+        if query_type == QueryUrl.RECOGNIZE:
             query_arg = f"{query_arg}&mode=Default"
         return f"{query_type}?appid={self._api_key}&{query_arg}"
 
@@ -84,14 +83,15 @@ class WolframAPI(CachedAPI):
         query_params['units'] = kwargs.get("units") if kwargs.get("units") == "metric" else "nonmetric"
         lat = kwargs.get("lat")
         lng = kwargs.get("lng")
-        if lat and lng:
+        if kwargs.get("latlong"):
+            query_params["latlong"] = kwargs.get("latlong")
+        elif lat and lng:
             query_params["latlong"] = f"{lat},{lng}"
         else:
             query_params["ip"] = kwargs.get("ip")
 
         query_params = {k: v for k, v in query_params.items() if v}
-        query_data = itertools.chain(query_params.items())
-        query_str = urllib.parse.urlencode(tuple(query_data))
+        query_str = urllib.parse.urlencode(query_params)
         return query_str
 
     def handle_query(self, **kwargs) -> dict:
@@ -101,8 +101,9 @@ class WolframAPI(CachedAPI):
           'query' - string query to ask Wolfram|Alpha
           'api' - string api to query (simple, short, spoken, full, recognize, conversation)
           'units' - optional string "metric" or "nonmetric"
-          'lat'+'lng' optional float or string lat/lng (separate keys)
-          'ip' optional string origin IP Address for geolocation
+          'latlong' - optional string lat/lng
+          'lat'+'lng' - optional float or string lat/lng (separate keys)
+          'ip' - optional string origin IP Address for geolocation
         :return: dict containing `status_code`, `content`, `encoding` from URL response
         """
         api = kwargs.get("api")
@@ -117,7 +118,7 @@ class WolframAPI(CachedAPI):
         elif api == "full":
             query_type = QueryUrl.FULL
         elif api == "recognize":
-            query_type = QueryUrl.RECONGNIZE
+            query_type = QueryUrl.RECOGNIZE
         elif api == "conversation":
             query_type = QueryUrl.CONVERSATION
         else:

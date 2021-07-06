@@ -151,7 +151,7 @@ class TestWolframAPI(unittest.TestCase):
 
         self.api._api_key = valid_key
 
-    def test_handle_query_valid(self):
+    def test_handle_query_valid_ip(self):
         resp = self.api.handle_query(api="short",
                                      query="how far away is the moon?",
                                      units="metric",
@@ -166,6 +166,36 @@ class TestWolframAPI(unittest.TestCase):
                                        units="metric",
                                        ip="50.47.129.133")
         self.assertEqual(resp, cached)
+
+    def test_handle_query_valid_lat_lng(self):
+        resp = self.api.handle_query(api="short",
+                                     query="how far away is the moon?",
+                                     units="metric",
+                                     lat="47.4797",
+                                     lng="-122.2079")
+        self.assertIsInstance(resp, dict)
+        self.assertEqual(resp["status_code"], 200)
+        self.assertIsInstance(resp["content"], bytes)
+        self.assertIsInstance(resp["encoding"], str)
+        self.assertIsInstance(resp["content"].decode(resp["encoding"]), str)
+
+    def test_handle_query_valid_latlong(self):
+        resp = self.api.handle_query(api="short",
+                                     query="how far away is the moon?",
+                                     units="metric",
+                                     latlong="47.4797,-122.2079")
+        self.assertIsInstance(resp, dict)
+        self.assertEqual(resp["status_code"], 200)
+        self.assertIsInstance(resp["content"], bytes)
+        self.assertIsInstance(resp["encoding"], str)
+        self.assertIsInstance(resp["content"].decode(resp["encoding"]), str)
+
+        same = self.api.handle_query(api="short",
+                                     query="how far away is the moon?",
+                                     units="metric",
+                                     lat="47.4797",
+                                     lng="-122.2079")
+        self.assertEqual(resp, same)
 
 
 if __name__ == '__main__':
