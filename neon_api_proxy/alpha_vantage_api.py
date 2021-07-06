@@ -40,7 +40,6 @@ class AlphaVantageAPI(CachedAPI):
     def __init__(self, api_key: str = None):
         super().__init__("alpha_vantage")
         self._api_key = api_key or find_neon_alpha_vantage_key()
-        self.preferred_market = "United States"
 
     def _search_symbol(self, query: str) -> dict:
         if not query:
@@ -51,24 +50,9 @@ class AlphaVantageAPI(CachedAPI):
                         "apikey": self._api_key}
         query_str = urllib.parse.urlencode(query_params)
         resp = self.session.get(f"{QueryUrl.SYMBOL}&{query_str}")
-        if not resp.ok:
-            LOG.error(f"API Query error ({resp.status_code}): {query}")
-            return {}
-        else:
-            resp_json = resp.json().get("bestMatches")
-            if not resp_json:
-                return dict()
-            # Filter by perferred market
-            matches = [co for co in resp_json if co.get("4. region") == self.preferred_market]
-            if not matches:
-                matches = resp_json
-            match = matches[0]
-            stock = {"symbol": match['1. symbol'],
-                     "name": match['2. name'],
-                     "region": match['4. region'],
-                     'currency': match['8. currency']
-                     }
-            return stock
+        return {"status_code": resp.status_code,
+                "content": resp.content,
+                "encoding": resp.encoding}
 
     def _get_quote(self, symbol: str):
         if not symbol:
@@ -80,19 +64,9 @@ class AlphaVantageAPI(CachedAPI):
         query_str = urllib.parse.urlencode(query_params)
         with self.session.request_expire_after(180):
             resp = self.session.get(f"{QueryUrl.QUOTE}&{query_str}")
-        if not resp.ok:
-            LOG.error(f"API Query error ({resp.status_code}): {symbol}")
-            return {"status_code": resp.status_code,
-                    "symbol": symbol}
-        else:
-            quote = resp.json().get("Global Quote")
-            if not quote:
-                return {}
-            quote = {"price": str(round(float(quote['05. price']), 2)),
-                     "symbol": quote['01. symbol']
-                     }
-            LOG.debug(quote)
-            return quote
+        return {"status_code": resp.status_code,
+                "content": resp.content,
+                "encoding": resp.encoding}
 
     def handle_query(self, **kwargs) -> dict:
         """
@@ -103,6 +77,14 @@ class AlphaVantageAPI(CachedAPI):
           'api' - optional string 'symbol' or 'quote'
         :return: dict containing stock data from URL response
         """
+        symbol = kwargs.get('symbol')
+        company = kwargs.get('company')
+        search_term = symbol or company
+        if not search_term:
+            return {"status_code": -1,
+                    "content": f"No search term provided",
+                    "encoding": None}
+
         api = kwargs.get("api")
         if not api:
             query_type = QueryUrl.QUOTE
@@ -116,21 +98,15 @@ class AlphaVantageAPI(CachedAPI):
                     "encoding": None}
 
         try:
-            symbol = kwargs.get('symbol')
-            company = kwargs.get('company')
-            search_term = symbol or company
-            if not search_term:
-                return {"status_code": -1,
-                        "content": f"No search term provided",
-                        "encoding": None}
-
             if query_type == QueryUrl.SYMBOL:
                 return self._search_symbol(search_term)
-            else:
-                data = self._search_symbol(search_term)
-                symbol = data.get("symbol")
-                quote = self._get_quote(symbol)
-                return {**quote, **data}
+            elif query_type == QueryUrl.QUOTE:
+                if not symbol:
+                    return {"status_code": -1,
+                            "content": f"No symbol provided",
+                            "encoding": None}
+                else:
+                    return self._get_quote(symbol)
         except Exception as e:
             return {"status_code": -1,
                     "content": repr(e),
