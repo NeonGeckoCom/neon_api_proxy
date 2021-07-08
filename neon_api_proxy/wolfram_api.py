@@ -140,7 +140,7 @@ class WolframAPI(CachedAPI):
         :param query: URL to query
         :return: dict response containing: `status_code`, `content`, and `encoding`
         """
-        result = self.session.get(query)
+        result = self.get_with_cache_timeout(query)
         if not result.ok:
             # 501 = Wolfram couldn't understand
             # 403 = Invalid API Key Provided

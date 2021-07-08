@@ -21,7 +21,7 @@ import urllib.parse
 
 from enum import Enum
 from neon_api_proxy.cached_api import CachedAPI
-from neon_utils.log_utils import LOG
+# from neon_utils.log_utils import LOG
 from neon_utils.authentication_utils import find_neon_alpha_vantage_key
 
 
@@ -49,7 +49,7 @@ class AlphaVantageAPI(CachedAPI):
         query_params = {"keywords": query,
                         "apikey": self._api_key}
         query_str = urllib.parse.urlencode(query_params)
-        resp = self.session.get(f"{QueryUrl.SYMBOL}&{query_str}")
+        resp = self.get_with_cache_timeout(f"{QueryUrl.SYMBOL}&{query_str}")
         return {"status_code": resp.status_code,
                 "content": resp.content,
                 "encoding": resp.encoding}
@@ -62,8 +62,7 @@ class AlphaVantageAPI(CachedAPI):
         query_params = {"symbol": symbol,
                         "apikey": self._api_key}
         query_str = urllib.parse.urlencode(query_params)
-        with self.session.request_expire_after(180):
-            resp = self.session.get(f"{QueryUrl.QUOTE}&{query_str}")
+        resp = self.get_with_cache_timeout(f"{QueryUrl.QUOTE}&{query_str}", 180)
         return {"status_code": resp.status_code,
                 "content": resp.content,
                 "encoding": resp.encoding}
@@ -111,18 +110,3 @@ class AlphaVantageAPI(CachedAPI):
             return {"status_code": -1,
                     "content": repr(e),
                     "encoding": None}
-
-    def _query_api(self, query: str) -> dict:
-        """
-        Queries the Wolfram|Alpha API and returns a dict with the status, content, and encoding
-        :param query: URL to query
-        :return: dict response containing: `status_code`, `content`, and `encoding`
-        """
-        result = self.session.get(query)
-        if not result.ok:
-            # 501 = Wolfram couldn't understand
-            # 403 = Invalid API Key Provided
-            LOG.warning(f"API Query error ({result.status_code}): {query}")
-        return {"status_code": result.status_code,
-                "content": result.content,
-                "encoding": result.encoding}

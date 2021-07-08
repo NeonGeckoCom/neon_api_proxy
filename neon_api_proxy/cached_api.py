@@ -17,18 +17,39 @@
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
-import requests_cache as requests
-
+from typing import Union
+from requests_cache import CachedSession, ExpirationTime, CachedResponse
 from abc import abstractmethod
+from requests import Response
 from requests.adapters import HTTPAdapter
 
 
 class CachedAPI:
     def __init__(self, cache_name):
         # TODO: Setup a database for this
-        self.session = requests.CachedSession(backend='memory', cache_name=cache_name)
+        self.session = CachedSession(backend='memory', cache_name=cache_name, expire_after=-1)
         self.session.mount('http://', HTTPAdapter(max_retries=8))
         self.session.mount('https://', HTTPAdapter(max_retries=8))
+
+    def get_with_cache_timeout(self, url: str, timeout: ExpirationTime = -1) -> Union[Response, CachedResponse]:
+        """
+        Make a request with a specified time to cache the response
+        :param url: URL to request
+        :param timeout: Time to remain cached
+        :return: Response or CachedResponse
+        """
+        with self.session.request_expire_after(timeout):
+            return self.session.get(url)
+        # return self.session.request("get", url, expire_after=timeout)
+
+    def get_bypass_cache(self, url: str) -> Response:
+        """
+        Make a request without using any cached responses
+        :param url: URL to request
+        :return: Response
+        """
+        with self.session.cache_disabled():
+            return self.session.get(url)
 
     @abstractmethod
     def handle_query(self, **kwargs) -> dict:

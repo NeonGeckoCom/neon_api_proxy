@@ -73,6 +73,6 @@ class OpenWeatherAPI(CachedAPI):
                         "appid": self._api_key,
                         "units": units}
         query_str = urllib.parse.urlencode(query_params)
-        resp = self.session.request("get", url=f"http://api.openweathermap.org/data/2.5/onecall?{query_str}",
-                                    expire_after=self.cache_timeout)
+        resp = self.get_with_cache_timeout(f"http://api.openweathermap.org/data/2.5/onecall?{query_str}",
+                                           self.cache_timeout)
         return resp

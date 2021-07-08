@@ -20,6 +20,7 @@
 import os
 import sys
 import unittest
+from time import sleep
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from neon_api_proxy.cached_api import CachedAPI
@@ -44,6 +45,26 @@ class TestCachedAPI(unittest.TestCase):
             cached = self.api.session.get(url, timeout=10)
             self.assertFalse(cached.from_cache)
         self.assertEqual(res.content, cached.content)
+
+    def test_get_with_cache_timeout(self):
+        url = "https://chatbotsforum.org"
+        res = self.api.get_with_cache_timeout(url, 10)
+        self.assertFalse(res.from_cache)
+        cached = self.api.get_with_cache_timeout(url, 10)
+        self.assertTrue(cached.from_cache)
+        self.assertEqual(res.content, cached.content)
+        sleep(10)
+        expired = self.api.get_with_cache_timeout(url)
+        self.assertFalse(expired.from_cache)
+
+    def test_get_bypass_cache(self):
+        url = "https://klat.com"
+        res = self.api.get_with_cache_timeout(url)
+        self.assertFalse(res.from_cache)
+        cached = self.api.get_with_cache_timeout(url)
+        self.assertTrue(cached.from_cache)
+        no_cache = self.api.get_bypass_cache(url)
+        self.assertFalse(no_cache.from_cache)
 
 
 if __name__ == '__main__':
