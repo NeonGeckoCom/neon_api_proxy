@@ -20,6 +20,7 @@ import json
 import os
 import sys
 import unittest
+from time import sleep
 
 from requests import Response
 from requests_cache import CachedResponse
