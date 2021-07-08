@@ -28,8 +28,8 @@ class CachedAPI:
     def __init__(self, cache_name):
         # TODO: Setup a database for this
         self.session = CachedSession(backend='memory', cache_name=cache_name, expire_after=-1)
-        self.session.mount('http://', HTTPAdapter(max_retries=8))
-        self.session.mount('https://', HTTPAdapter(max_retries=8))
+        self.session.mount('http://', HTTPAdapter(max_retries=3))
+        self.session.mount('https://', HTTPAdapter(max_retries=3))
 
     def get_with_cache_timeout(self, url: str, timeout: ExpirationTime = -1) -> Union[Response, CachedResponse]:
         """
@@ -40,7 +40,7 @@ class CachedAPI:
         """
         if timeout == 0:
             return self.get_bypass_cache(url)
-        return self.session.request("get", url, expire_after=timeout, timeout=30)
+        return self.session.request("get", url, expire_after=timeout, timeout=10)
         # with self.session.request_expire_after(timeout):
         #     return self.session.get(url)
 
@@ -51,7 +51,7 @@ class CachedAPI:
         :return: Response
         """
         with self.session.cache_disabled():
-            return self.session.get(url, timeout=30)
+            return self.session.get(url, timeout=10)
 
     @abstractmethod
     def handle_query(self, **kwargs) -> dict:
