@@ -21,7 +21,7 @@ import os
 import sys
 import unittest
 
-from requests_cache.response import Response
+# from requests_cache.response import Response
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from neon_api_proxy.owm_api import OpenWeatherAPI
@@ -53,25 +53,20 @@ class TestOpenWeatherAPI(unittest.TestCase):
 
     def test_valid_api_query(self):
         resp = self.api._get_api_response(VALID_LAT, VALID_LNG, "metric")
-        self.assertIsInstance(resp, Response)
         self.assertTrue(resp.ok)
         self.assertIsInstance(resp.json(), dict)
 
     def test_valid_api_cached_query(self):
         resp = self.api._get_api_response(VALID_LAT, VALID_LNG, "metric")
-        self.assertIsInstance(resp, Response)
         self.assertFalse(resp.from_cache)
         resp = self.api._get_api_response(VALID_LAT, VALID_LNG, "metric")
-        self.assertIsInstance(resp, Response)
         self.assertTrue(resp.from_cache)
 
     def test_valid_api_expired_cache_query(self):
         self.api.cache_timeout = 0
         resp = self.api._get_api_response(VALID_LAT, VALID_LNG, "imperial")
-        self.assertIsInstance(resp, Response)
         self.assertFalse(resp.from_cache)
         resp = self.api._get_api_response(VALID_LAT, VALID_LNG, "imperial")
-        self.assertIsInstance(resp, Response)
         self.assertTrue(resp.from_cache)
         self.api.cache_timeout = 180
 
