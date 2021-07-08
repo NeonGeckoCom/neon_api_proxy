@@ -22,7 +22,7 @@ from requests_cache.response import Response
 
 from neon_api_proxy.cached_api import CachedAPI
 from neon_utils.log_utils import LOG
-# from neon_utils.authentication_utils import find_neon_owm_key
+from neon_utils.authentication_utils import find_neon_owm_key
 
 
 class OpenWeatherAPI(CachedAPI):
@@ -32,7 +32,7 @@ class OpenWeatherAPI(CachedAPI):
 
     def __init__(self, api_key: str = None, cache_seconds=180):
         super().__init__("open_weather_map")
-        self._api_key = "d07b43d4847152a7e95e063111c70a58"  # api_key or find_neon_owm_key()
+        self._api_key = api_key or find_neon_owm_key()
         self.cache_timeout = cache_seconds
 
     def handle_query(self, **kwargs) -> dict:
