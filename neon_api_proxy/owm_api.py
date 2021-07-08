@@ -18,7 +18,7 @@
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
 import urllib.parse
-from requests_cache.response import Response
+from requests import Response
 
 from neon_api_proxy.cached_api import CachedAPI
 from neon_utils.log_utils import LOG
