@@ -40,7 +40,7 @@ class CachedAPI:
         """
         if timeout == 0:
             return self.get_bypass_cache(url)
-        return self.session.request("get", url, expire_after=timeout)
+        return self.session.request("get", url, expire_after=timeout, timeout=30)
         # with self.session.request_expire_after(timeout):
         #     return self.session.get(url)
 
@@ -51,7 +51,7 @@ class CachedAPI:
         :return: Response
         """
         with self.session.cache_disabled():
-            return self.session.get(url)
+            return self.session.get(url, timeout=30)
 
     @abstractmethod
     def handle_query(self, **kwargs) -> dict:
