@@ -38,9 +38,9 @@ class CachedAPI:
         :param timeout: Time to remain cached
         :return: Response or CachedResponse
         """
-        with self.session.request_expire_after(timeout):
-            return self.session.get(url)
-        # return self.session.request("get", url, expire_after=timeout)
+        return self.session.request("get", url, expire_after=timeout)
+        # with self.session.request_expire_after(timeout):
+        #     return self.session.get(url)
 
     def get_bypass_cache(self, url: str) -> Response:
         """
