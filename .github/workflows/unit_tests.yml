@@ -1,0 +1,69 @@
+# This workflow will run unit tests
+
+name: Run Unit Tests
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  unit_tests:
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/requirements.txt
+          pip install -r requirements/test_requirements.txt
+      - name: Export credentials
+        run: |
+          mkdir -p ~/.local/share/neon
+          echo ${WOLFRAM_ID} > ~/.local/share/neon/wolfram.txt
+          echo ${AV_API_KEY} > ~/.local/share/neon/alpha_vantage.txt
+          echo ${OWM_KEY} > ~/.local/share/neon/owm.txt
+        env:
+          WOLFRAM_ID: ${{secrets.wolfram_id}}
+          AV_API_KEY: ${{secrets.alpha_vantage_key}}
+          OWM_KEY: ${{secrets.open_weather_map_key}}
+      - name: Test Cached API
+        run: |
+          pytest tests/test_cached_api.py --doctest-modules --junitxml=tests/cached-api-test-results.xml
+      - name: Upload cached API test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: cached-api-test-results
+          path: tests/cached-api-test-results.xml
+
+      - name: Test Wolfram API
+        run: |
+          pytest tests/test_wolfram_api.py --doctest-modules --junitxml=tests/wolfram-api-test-results.xml
+      - name: Upload Wolfram API test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: wolfram-api-test-results
+          path: tests/wolfram-api-test-results.xml
+
+      - name: Test Alpha Vantage API
+        run: |
+          pytest tests/test_alpha_vantage_api.py --doctest-modules --junitxml=tests/alphavantage-api-test-results.xml
+      - name: Upload Alpha Vantage API test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: alphavantage-api-test-results
+          path: tests/alphavantage-api-test-results.xml
+
+      - name: Test OWM API
+        run: |
+          pytest tests/test_owm_api.py --doctest-modules --junitxml=tests/owm-api-test-results.xml
+      - name: Upload Open Weather Map API test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: owm-api-test-results
+          path: tests/owm-api-test-results.xml
