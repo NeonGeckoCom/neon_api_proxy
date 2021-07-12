@@ -6,7 +6,7 @@ from neon_api_proxy.alpha_vantage_api import AlphaVantageAPI
 from neon_api_proxy.wolfram_api import WolframAPI
 
 
-class APIController:
+class NeonAPIProxyController:
     """
         Generic module for binding between service name and actual service for fulfilling request
     """

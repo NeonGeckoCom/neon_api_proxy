@@ -23,7 +23,7 @@ import unittest
 from time import sleep
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from neon_api_proxy.controller import APIController
+from neon_api_proxy.controller import NeonAPIProxyController
 
 INVALID_SERVICE_QUERY = {
     "service": "invalid_service",
@@ -58,7 +58,7 @@ VALID_WOLFRAM_QUERY = {
 class TestCachedAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.controller = APIController(config='config.json')
+        cls.controller = NeonAPIProxyController(config='config.json')
 
     def test_invalid_service(self):
         resp = self.controller.resolve_query(INVALID_SERVICE_QUERY)
