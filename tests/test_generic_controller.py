@@ -65,13 +65,11 @@ class TestCachedAPI(unittest.TestCase):
         self.assertIsNotNone(resp)
         self.assertEqual(resp['status_code'], 401)
 
-    @unittest.skip('No API key provided')
     def test_alpha_vantage_forwarding(self):
         resp = self.controller.resolve_query(VALID_ALPHA_VANTAGE_QUERY)
         self.assertIsNotNone(resp)
         self.assertEqual(resp['status_code'], 200)
 
-    @unittest.skip('No API key provided')
     def test_owm_forwarding(self):
         resp = self.controller.resolve_query(VALID_OWM_QUERY)
         self.assertIsNotNone(resp)
