@@ -24,7 +24,7 @@ import socketserver
 from neon_api_proxy.controller import NeonAPIProxyController
 from neon_api_proxy.tcp_handler import NeonAPITCPHandler
 
-parser = argparse.ArgumentParser(description='Process some integers.')
+parser = argparse.ArgumentParser(description='Parameters for TCP socket server')
 
 parser.add_argument('--host',
                     type=str,
