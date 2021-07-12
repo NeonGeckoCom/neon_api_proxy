@@ -18,28 +18,43 @@
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
 import os
-import argparse
-import socketserver
+import sys
+import unittest
+import socket
+import json
 
-from neon_api_proxy.controller import NeonAPIProxyController
-from neon_api_proxy.tcp_handler import NeonAPITCPHandler
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-parser = argparse.ArgumentParser(description='Process some integers.')
+VALID_WOLFRAM_QUERY = {
+    "service": "wolfram_alpha",
+    "query": "how far away is Rome?",
+    "api": "simple",
+    "units": "metric",
+    "ip": "64.34.186.120"
+}
 
-parser.add_argument('--host',
-                    type=str,
-                    default='127.0.0.1',
-                    help='Socket host (defaults to 127.0.0.1)')
-parser.add_argument('--port',
-                    type=int,
-                    default=8555,
-                    help='Socket port (defaults to 8555)')
 
-args = parser.parse_args()
+class TestTCPSocket(unittest.TestCase):
+    """Hereby we presume that there is an active socket service running"""
 
-if __name__ == "__main__":
-    HOST, PORT = args.host, args.port
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.host = os.environ.get('host', '127.0.0.1')  # The server's hostname or IP address
+        cls.port = os.environ.get('port', 8555)  # The server's port
 
-    with socketserver.ThreadingTCPServer((HOST, PORT), NeonAPITCPHandler) as server:
-        server.controller = NeonAPIProxyController(config='config.json')
-        server.serve_forever()
+    def test_communication(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((self.host, self.port))
+            s.sendall(bytes(json.dumps(VALID_WOLFRAM_QUERY), encoding='utf-8'))
+            data = bytearray()
+            while True:
+                packet = s.recv(1024)
+                if not packet:
+                    break
+                data.extend(packet)
+            self.assertIsNotNone(data)
+            self.assertEqual(type(json.loads(data.decode('utf-8'))), dict)
+
+
+if __name__ == '__main__':
+    unittest.main()
