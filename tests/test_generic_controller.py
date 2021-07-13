@@ -55,7 +55,7 @@ VALID_WOLFRAM_QUERY = {
 }
 
 
-class TestCachedAPI(unittest.TestCase):
+class TestGenericController(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.controller = NeonAPIProxyController(config=os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json'))
