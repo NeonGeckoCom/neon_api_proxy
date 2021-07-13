@@ -22,7 +22,7 @@ import argparse
 import socketserver
 
 from neon_api_proxy.controller import NeonAPIProxyController
-from neon_api_proxy.tcp_handler import NeonAPITCPHandler
+from neon_api_proxy.tcp_utils import NeonAPITCPHandler
 
 parser = argparse.ArgumentParser(description='Parameters for TCP socket server')
 

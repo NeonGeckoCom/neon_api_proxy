@@ -22,8 +22,14 @@ import sys
 import unittest
 import socket
 import json
+import base64
+import ast
+
+from neon_utils import LOG
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+from neon_api_proxy.tcp_utils import decode_b64_msg, encode_b64_msg, get_packet_data
 
 VALID_WOLFRAM_QUERY = {
     "service": "wolfram_alpha",
@@ -42,18 +48,15 @@ class TestTCPSocket(unittest.TestCase):
         cls.host = os.environ.get('host', '127.0.0.1')  # The server's hostname or IP address
         cls.port = os.environ.get('port', 8555)  # The server's port
 
-    def test_communication(self):
+    def test_valid_wolfram_query(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((self.host, self.port))
-            s.sendall(bytes(json.dumps(VALID_WOLFRAM_QUERY), encoding='utf-8'))
-            data = bytearray()
-            while True:
-                packet = s.recv(1024)
-                if not packet:
-                    break
-                data.extend(packet)
+            s.sendall(encode_b64_msg(VALID_WOLFRAM_QUERY))
+            data = get_packet_data(s)
             self.assertIsNotNone(data)
-            self.assertEqual(type(json.loads(data.decode('utf-8'))), dict)
+            converted_data = decode_b64_msg(data)
+            self.assertEqual(type(converted_data), dict)
+            self.assertTrue(b'wolfram' in converted_data['content'])
 
 
 if __name__ == '__main__':
