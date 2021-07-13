@@ -41,5 +41,7 @@ if __name__ == "__main__":
     HOST, PORT = args.host, args.port
 
     with socketserver.ThreadingTCPServer((HOST, PORT), NeonAPITCPHandler) as server:
-        server.controller = NeonAPIProxyController(config='config.json')
+        with open(os.path.expanduser(os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json'))) as input_file:
+            _config_data = json.load(input_file)
+        server.controller = NeonAPIProxyController(config=_config_data)
         server.serve_forever()
