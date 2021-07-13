@@ -18,17 +18,14 @@ class NeonAPIProxyController:
         'open_weather_map': OpenWeatherAPI
     }
 
-    def __init__(self, config: str = None):
+    def __init__(self, config: dict = None):
         """
-            @param config: Path to the local configuration file
+            @param config: configurations dictionary
         """
         self.config = None
 
         if os.environ.get('ENV', None) == 'DEV' and config:
-            config_path = os.path.expanduser(config)
-            if os.path.exists(config_path):
-                with open(config_path) as config_file:
-                    self.config = json.load(config_file)
+            self.config = config
 
     def resolve_query(self, query: dict) -> dict:
         """
@@ -38,9 +35,7 @@ class NeonAPIProxyController:
         """
         target_service = query.get('service', None)
         if target_service and target_service in list(self.service_class_mapping):
-            api_key = None
-            if self.config:
-                api_key = self.config['SERVICES'][target_service]['api_key']
+            api_key = self.config['SERVICES'][target_service]['api_key'] if self.config else None
             resp = self.service_class_mapping[target_service](api_key=api_key).handle_query(**query)
         else:
             resp = {
