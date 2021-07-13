@@ -62,7 +62,7 @@ class TestGenericController(unittest.TestCase):
     def setUpClass(cls) -> None:
         with open(os.path.expanduser(os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json'))) as input_file:
             cls._config_data = json.load(input_file)
-        cls.controller = NeonAPIProxyController(config=_config_data)
+        cls.controller = NeonAPIProxyController(config=cls._config_data)
 
     def test_invalid_service(self):
         resp = self.controller.resolve_query(INVALID_SERVICE_QUERY)

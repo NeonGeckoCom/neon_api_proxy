@@ -35,9 +35,7 @@ class NeonAPIProxyController:
         """
         target_service = query.get('service', None)
         if target_service and target_service in list(self.service_class_mapping):
-            api_key = None
-            if self.config:
-                api_key = self.config['SERVICES'][target_service]['api_key']
+            api_key = self.config['SERVICES'][target_service]['api_key'] if self.config else None
             resp = self.service_class_mapping[target_service](api_key=api_key).handle_query(**query)
         else:
             resp = {
