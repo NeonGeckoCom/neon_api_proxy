@@ -58,7 +58,7 @@ VALID_WOLFRAM_QUERY = {
 class TestCachedAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.controller = NeonAPIProxyController(config='config.json')
+        cls.controller = NeonAPIProxyController(config=os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json'))
 
     def test_invalid_service(self):
         resp = self.controller.resolve_query(INVALID_SERVICE_QUERY)
