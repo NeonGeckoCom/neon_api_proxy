@@ -25,10 +25,7 @@ class NeonAPIProxyController:
         self.config = None
 
         if os.environ.get('ENV', None) == 'DEV' and config:
-            config_path = os.path.expanduser(config)
-            if os.path.exists(config_path):
-                with open(config_path) as config_file:
-                    self.config = json.load(config_file)
+            self.config = config
 
     def resolve_query(self, query: dict) -> dict:
         """
