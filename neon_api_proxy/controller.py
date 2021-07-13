@@ -18,9 +18,9 @@ class NeonAPIProxyController:
         'open_weather_map': OpenWeatherAPI
     }
 
-    def __init__(self, config: str = None):
+    def __init__(self, config: dict = None):
         """
-            @param config: Path to the local configuration file
+            @param config: configurations dictionary
         """
         self.config = None
 
