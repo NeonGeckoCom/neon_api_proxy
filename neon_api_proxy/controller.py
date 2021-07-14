@@ -22,10 +22,7 @@ class NeonAPIProxyController:
         """
             @param config: configurations dictionary
         """
-        self.config = None
-
-        if os.environ.get('ENV', None) == 'DEV' and config:
-            self.config = config
+        self.config = config
 
     def resolve_query(self, query: dict) -> dict:
         """
@@ -35,7 +32,9 @@ class NeonAPIProxyController:
         """
         target_service = query.get('service', None)
         if target_service and target_service in list(self.service_class_mapping):
-            api_key = self.config['SERVICES'][target_service]['api_key'] if self.config else None
+            api_key = None
+            if os.environ.get('ENV', None) == 'DEV':
+                api_key = self.config['SERVICES'][target_service]['api_key'] if self.config else None
             resp = self.service_class_mapping[target_service](api_key=api_key).handle_query(**query)
         else:
             resp = {
