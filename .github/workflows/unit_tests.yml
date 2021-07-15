@@ -11,6 +11,8 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
     runs-on: ubuntu-latest
+    env:
+      GITHUB_CI: true
     steps:
       - uses: actions/checkout@v2
       - name: Set up python ${{ matrix.python-version }}
@@ -28,10 +30,12 @@ jobs:
           echo ${WOLFRAM_ID} > ~/.local/share/neon/wolfram.txt
           echo ${AV_API_KEY} > ~/.local/share/neon/alpha_vantage.txt
           echo ${OWM_KEY} > ~/.local/share/neon/owm.txt
+          echo ${GENERIC_CONTROLLER_CONFIG} > ~/.local/share/neon/credentials.json
         env:
           WOLFRAM_ID: ${{secrets.wolfram_id}}
           AV_API_KEY: ${{secrets.alpha_vantage_key}}
           OWM_KEY: ${{secrets.open_weather_map_key}}
+          GENERIC_CONTROLLER_CONFIG: ${{secrets.generic_controller_config}}
       - name: Test Cached API
         run: |
           pytest tests/test_cached_api.py --doctest-modules --junitxml=tests/cached-api-test-results.xml

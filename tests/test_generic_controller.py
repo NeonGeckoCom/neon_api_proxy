@@ -60,7 +60,11 @@ VALID_WOLFRAM_QUERY = {
 class TestGenericController(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        with open(os.path.expanduser(os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json'))) as input_file:
+        if os.environ.get('GITHUB_CI', False):
+            cls.file_path = "~/.local/share/neon/credentials.json"
+        else:
+            cls.file_path = os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json')
+        with open(os.path.expanduser(cls.file_path)) as input_file:
             cls._config_data = json.load(input_file)
         cls.controller = NeonAPIProxyController(config=cls._config_data)
 
