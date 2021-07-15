@@ -18,30 +18,46 @@
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
 import os
+import json
 import argparse
 import socketserver
 
+from neon_utils import LOG
 from neon_api_proxy.controller import NeonAPIProxyController
 from neon_api_proxy.tcp_utils import NeonAPITCPHandler
 
-parser = argparse.ArgumentParser(description='Parameters for TCP socket server')
 
-parser.add_argument('--host',
-                    type=str,
-                    default='127.0.0.1',
-                    help='Socket host (defaults to 127.0.0.1)')
-parser.add_argument('--port',
-                    type=int,
-                    default=8555,
-                    help='Socket port (defaults to 8555)')
+def main(config_data: dict):
+    """
+        Runs threaded TCP socket on specified address and port
+        @param config_data: dict with configuration data
+    """
+    parser = argparse.ArgumentParser(description='Parameters for TCP socket server')
 
-args = parser.parse_args()
+    parser.add_argument('--host',
+                        type=str,
+                        default='127.0.0.1',
+                        help='Socket host (defaults to 127.0.0.1)')
+    parser.add_argument('--port',
+                        type=int,
+                        default=8555,
+                        help='Socket port (defaults to 8555)')
+    args = parser.parse_args()
+
+    host, port = args.host, args.port
+
+    with socketserver.ThreadingTCPServer((host, port), NeonAPITCPHandler) as server:
+        server.controller = NeonAPIProxyController(config=config_data)
+        server.serve_forever()
+
 
 if __name__ == "__main__":
-    HOST, PORT = args.host, args.port
-
-    with socketserver.ThreadingTCPServer((HOST, PORT), NeonAPITCPHandler) as server:
-        with open(os.path.expanduser(os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json'))) as input_file:
+    config_path = os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json')
+    _config_data = None
+    try:
+        with open(os.path.expanduser(config_path)) as input_file:
             _config_data = json.load(input_file)
-        server.controller = NeonAPIProxyController(config=_config_data)
-        server.serve_forever()
+    except Exception as e:
+        LOG.error(e)
+    finally:
+        main(config_data=_config_data)
