@@ -23,6 +23,24 @@ class NeonAPIProxyController:
             @param config: configurations dictionary
         """
         self.config = config
+        self.service_instance_mapping = self.init_service_instances(self.service_class_mapping)
+
+    def init_service_instances(self, service_class_mapping: dict):
+        """
+            Maps service classes to their instances
+            @param service_class_mapping: dictionary containing mapping between service string name
+                    and python class representing it
+
+            @return dictionary containing mapping between service string name
+                    and instance of python class representing it
+        """
+        service_mapping = dict()
+        for item in list(service_class_mapping):
+            api_key = None
+            if os.environ.get('ENV', None) == 'DEV':
+                api_key = self.config['SERVICES'][target_service]['api_key'] if self.config else None
+            service_mapping[item] = service_class_mapping[item](api_key=api_key)
+        return service_mapping
 
     def resolve_query(self, query: dict) -> dict:
         """
@@ -31,11 +49,8 @@ class NeonAPIProxyController:
             @return: response from the destination service
         """
         target_service = query.get('service', None)
-        if target_service and target_service in list(self.service_class_mapping):
-            api_key = None
-            if os.environ.get('ENV', None) == 'DEV':
-                api_key = self.config['SERVICES'][target_service]['api_key'] if self.config else None
-            resp = self.service_class_mapping[target_service](api_key=api_key).handle_query(**query)
+        if target_service and target_service in list(self.service_instance_mapping):
+            resp = self.service_instance_mapping[target_service].handle_query(**query)
         else:
             resp = {
                 "status_code": 401,
