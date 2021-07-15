@@ -25,7 +25,7 @@ class NeonAPIProxyController:
         self.config = config
         self.service_instance_mapping = self.init_service_instances(self.service_class_mapping)
 
-    def init_service_instances(self, service_class_mapping: dict):
+    def init_service_instances(self, service_class_mapping: dict) -> dict:
         """
             Maps service classes to their instances
             @param service_class_mapping: dictionary containing mapping between service string name
