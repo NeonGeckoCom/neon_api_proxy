@@ -27,7 +27,7 @@ from neon_api_proxy.controller import NeonAPIProxyController
 from neon_api_proxy.tcp_utils import NeonAPITCPHandler
 
 
-def main(config_data: dict):
+def main(config_data: dict = None):
     """
         Runs threaded TCP socket on specified address and port
         @param config_data: dict with configuration data
