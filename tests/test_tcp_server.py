@@ -29,7 +29,7 @@ from neon_utils import LOG
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from neon_api_proxy.tcp_utils import decode_b64_msg, encode_b64_msg, get_packet_data
+from neon_api_proxy.socket_handler import decode_b64_msg, encode_b64_msg, get_packet_data
 
 VALID_WOLFRAM_QUERY = {
     "service": "wolfram_alpha",

@@ -24,7 +24,7 @@ import socketserver
 
 from neon_utils import LOG
 from neon_api_proxy.controller import NeonAPIProxyController
-from neon_api_proxy.tcp_utils import NeonAPITCPHandler
+from neon_api_proxy.socket_handler import NeonAPITCPHandler
 
 
 def main(config_data: dict = None):
