@@ -17,10 +17,47 @@
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
-"""
-TODO: Do something here to listen for incoming API requests and route them to the appropriate proxy
-In general, requests will contain an API identifier (like "wolfram" or "openweathermap" and some arbitrary key/val data
-The relevant API class should receive the data and return some arbitrary data back (dict) which should be
-served back to the client. For http requests, `status_code`, `content`, and `encoding` params should be included in
-returns.
-"""
+import os
+import json
+import argparse
+import socketserver
+
+from neon_utils import LOG
+from neon_api_proxy.controller import NeonAPIProxyController
+from neon_api_proxy.socket_handler import NeonAPITCPHandler
+
+
+def main(config_data: dict = None):
+    """
+        Runs threaded TCP socket on specified address and port
+        @param config_data: dict with configuration data
+    """
+    parser = argparse.ArgumentParser(description='Parameters for TCP socket server')
+
+    parser.add_argument('--host',
+                        type=str,
+                        default='127.0.0.1',
+                        help='Socket host (defaults to 127.0.0.1)')
+    parser.add_argument('--port',
+                        type=int,
+                        default=8555,
+                        help='Socket port (defaults to 8555)')
+    args = parser.parse_args()
+
+    host, port = args.host, args.port
+
+    with socketserver.ThreadingTCPServer((host, port), NeonAPITCPHandler) as server:
+        server.controller = NeonAPIProxyController(config=config_data)
+        server.serve_forever()
+
+
+if __name__ == "__main__":
+    config_path = os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json')
+    _config_data = None
+    try:
+        with open(os.path.expanduser(config_path)) as input_file:
+            _config_data = json.load(input_file)
+    except Exception as e:
+        LOG.error(e)
+    finally:
+        main(config_data=_config_data)
