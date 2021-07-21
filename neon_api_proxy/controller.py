@@ -36,9 +36,7 @@ class NeonAPIProxyController:
         """
         service_mapping = dict()
         for item in list(service_class_mapping):
-            api_key = None
-            if os.environ.get('ENV', None) == 'DEV':
-                api_key = self.config['SERVICES'][item]['api_key'] if self.config else None
+            api_key = self.config.get("SERVICES", {}).get(item, {}).get("api_key") if self.config else None
             service_mapping[item] = service_class_mapping[item](api_key=api_key)
         return service_mapping
 
