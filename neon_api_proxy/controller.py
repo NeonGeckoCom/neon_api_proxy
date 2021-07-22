@@ -47,6 +47,7 @@ class NeonAPIProxyController:
             @return: response from the destination service
         """
         target_service = query.get('service', None)
+        message_id = query.pop('message_id', None)
         if target_service and target_service in list(self.service_instance_mapping):
             resp = self.service_instance_mapping[target_service].handle_query(**query)
         else:
@@ -55,4 +56,5 @@ class NeonAPIProxyController:
                 "content": f"Unresolved service name: {target_service}",
                 "encoding": "utf-8"
             }
+        resp['message_id'] = message_id
         return resp
