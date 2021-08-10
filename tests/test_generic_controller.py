@@ -22,8 +22,6 @@ import sys
 import unittest
 import json
 
-from time import sleep
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from neon_api_proxy.controller import NeonAPIProxyController
 
