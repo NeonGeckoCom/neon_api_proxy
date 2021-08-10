@@ -21,15 +21,12 @@ import os
 import sys
 import unittest
 import socket
-import json
-import base64
-import ast
 
-from neon_utils import LOG
+from neon_utils.socket_utils import *
+from neon_utils.logger import LOG
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
-from neon_api_proxy.socket_handler import decode_b64_msg, encode_b64_msg, get_packet_data
+from neon_api_proxy.tcp_server import start_server, stop_server
 
 VALID_WOLFRAM_QUERY = {
     "service": "wolfram_alpha",
@@ -45,17 +42,37 @@ class TestTCPSocket(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        cls.server = start_server('127.0.0.1', 8555, dict())
         cls.host = os.environ.get('host', '127.0.0.1')  # The server's hostname or IP address
         cls.port = os.environ.get('port', 8555)  # The server's port
 
+    @classmethod
+    def tearDownClass(cls) -> None:
+        stop_server()
+
     def test_valid_wolfram_query(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((self.host, self.port))
-            s.sendall(encode_b64_msg(VALID_WOLFRAM_QUERY))
-            data = get_packet_data(s)
+            connected = False
+            data = None
+            while not connected:
+                try:
+                    s.connect((self.host, self.port))
+                    connected = True
+                except ConnectionRefusedError:
+                    LOG.error("Connection refused!")
+            while not data:
+                try:
+                    s.sendall(dict_to_b64(VALID_WOLFRAM_QUERY))
+                except BrokenPipeError:
+                    LOG.error("Socket broken pipe!")
+                try:
+                    data = get_packet_data(s, True)
+                except ConnectionResetError:
+                    LOG.error("Socket connection reset!")
             self.assertIsNotNone(data)
-            converted_data = decode_b64_msg(data)
-            self.assertEqual(type(converted_data), dict)
+            converted_data = b64_to_dict(data)
+            self.assertIsInstance(converted_data, dict)
+            self.assertEqual(converted_data["status_code"], 200)
             self.assertTrue(b'wolfram' in converted_data['content'])
 
 

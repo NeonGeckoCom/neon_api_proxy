@@ -21,7 +21,7 @@ import urllib.parse
 from requests import Response
 
 from neon_api_proxy.cached_api import CachedAPI
-from neon_utils.log_utils import LOG
+from neon_utils import LOG
 from neon_utils.authentication_utils import find_neon_owm_key
 
 

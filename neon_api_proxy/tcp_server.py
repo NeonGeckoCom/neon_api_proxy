@@ -17,45 +17,26 @@
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
-import os
-import json
-import argparse
+import socketserver
+from threading import Thread
+from time import sleep
 
-from neon_utils import LOG
-from ovos_utils import wait_for_exit_signal
+from typing import Optional
+from neon_api_proxy.controller import NeonAPIProxyController
+from neon_api_proxy.socket_handler import NeonAPITCPHandler
 
-from neon_api_proxy.tcp_server import start_server
-
-
-def main(config_data: dict = None):
-    """
-        Runs threaded TCP socket on specified address and port
-        @param config_data: dict with configuration data
-    """
-    parser = argparse.ArgumentParser(description='Parameters for TCP socket server')
-
-    parser.add_argument('--host',
-                        type=str,
-                        default='127.0.0.1',
-                        help='Socket host (defaults to 127.0.0.1)')
-    parser.add_argument('--port',
-                        type=int,
-                        default=8555,
-                        help='Socket port (defaults to 8555)')
-    args = parser.parse_args()
-
-    host, port = args.host, args.port
-    start_server(host, port, config_data)
-    wait_for_exit_signal()
+SERVER: Optional[socketserver.ThreadingTCPServer] = None
 
 
-if __name__ == "__main__":
-    config_path = os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json')
-    _config_data = None
-    try:
-        with open(os.path.expanduser(config_path)) as input_file:
-            _config_data = json.load(input_file)
-    except Exception as e:
-        LOG.error(e)
-    finally:
-        main(config_data=_config_data)
+def start_server(host: str, port: int, proxy_config: dict):
+    global SERVER
+    with socketserver.ThreadingTCPServer((host, port), NeonAPITCPHandler) as server:
+        server.controller = NeonAPIProxyController(config=proxy_config)
+        SERVER = server
+        Thread(target=server.serve_forever, daemon=True).start()
+    return SERVER
+
+
+def stop_server():
+    global SERVER
+    SERVER.shutdown()
