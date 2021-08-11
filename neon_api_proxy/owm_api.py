@@ -45,7 +45,7 @@ class OpenWeatherAPI(CachedAPI):
         :return: dict containing `status_code`, `content`, `encoding` from URL response
         """
         lat = kwargs.get("lat")
-        lng = kwargs.get("lng")
+        lng = kwargs.get("lng", kwargs.get("lon"))
         units = "metric" if kwargs.get("units") == "metric" else "imperial"
 
         if not all((lat, lng, units)):
