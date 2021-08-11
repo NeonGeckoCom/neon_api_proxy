@@ -17,20 +17,21 @@
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
-import os
-import json
 import argparse
 import socketserver
 
-from neon_utils import LOG
+from ovos_utils import wait_for_exit_signal
+
+from neon_api_proxy.api_connector import NeonAPIMQConnector
+from neon_api_proxy.config import get_proxy_config, get_mq_config
 from neon_api_proxy.controller import NeonAPIProxyController
 from neon_api_proxy.socket_handler import NeonAPITCPHandler
 
 
-def main(config_data: dict = None):
+def run_tcp_handler(config_data: dict = None):
     """
         Runs threaded TCP socket on specified address and port
-        @param config_data: dict with configuration data
+        @param config_data: dict with configuration data for the ProxyController
     """
     parser = argparse.ArgumentParser(description='Parameters for TCP socket server')
 
@@ -51,13 +52,20 @@ def main(config_data: dict = None):
         server.serve_forever()
 
 
+def run_mq_handler():
+    """
+    Start the ProxyController and MQConnector services
+    """
+    config_data = get_proxy_config()
+    proxy = NeonAPIProxyController(config_data)
+    connector = NeonAPIMQConnector(config=get_mq_config(), service_name='neon_api_connector', proxy=proxy)
+    connector.run()
+    wait_for_exit_signal()
+
+
+def main():
+    run_mq_handler()
+
+
 if __name__ == "__main__":
-    config_path = os.environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json')
-    _config_data = None
-    try:
-        with open(os.path.expanduser(config_path)) as input_file:
-            _config_data = json.load(input_file)
-    except Exception as e:
-        LOG.error(e)
-    finally:
-        main(config_data=_config_data)
+    main()

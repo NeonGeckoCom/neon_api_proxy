@@ -18,10 +18,13 @@
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
 
 import os
+import sys
 import unittest
 import socket
+from multiprocessing import Process
 
-from neon_utils.socket_utils import b64_to_dict, dict_to_b64, get_packet_data
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from neon_api_proxy.__main__ import run_mq_handler
 
 VALID_WOLFRAM_QUERY = {
     "service": "wolfram_alpha",
@@ -32,23 +35,22 @@ VALID_WOLFRAM_QUERY = {
 }
 
 
-class TestTCPSocket(unittest.TestCase):
-    """Hereby we presume that there is an active socket service running"""
-
+class TestMQHandler(unittest.TestCase):
+    # TODO: Setup some MQ server for testing and add this to GH automation DM
     @classmethod
     def setUpClass(cls) -> None:
-        cls.host = os.environ.get('host', '127.0.0.1')  # The server's hostname or IP address
-        cls.port = os.environ.get('port', 8555)  # The server's port
+        cls.mq_service = Process(target=run_mq_handler)
+        cls.mq_service.start()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.mq_service.terminate()
 
     def test_valid_wolfram_query(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((self.host, self.port))
-            s.sendall(dict_to_b64(VALID_WOLFRAM_QUERY))
-            data = get_packet_data(s)
-            self.assertIsNotNone(data)
-            converted_data = b64_to_dict(data)
-            self.assertEqual(type(converted_data), dict)
-            self.assertTrue(b'wolfram' in converted_data['content'])
+        from neon_utils.service_apis import request_neon_api, NeonAPI
+        resp = request_neon_api(NeonAPI.WOLFRAM_ALPHA, VALID_WOLFRAM_QUERY)
+        self.assertIsInstance(resp, dict)
+        self.assertNotEqual(resp["status_code"], 401)
 
 
 if __name__ == '__main__':

@@ -16,14 +16,13 @@
 # Specialized conversational reconveyance options from Conversation Processing Intelligence Corp.
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
+
 import json
 import os
 import sys
 import unittest
-from time import sleep
 
 from requests import Response
-from requests_cache import CachedResponse
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from neon_api_proxy.owm_api import OpenWeatherAPI
