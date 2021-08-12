@@ -1,4 +1,4 @@
 requests-cache==0.6.4
 requests~=2.25
 neon_utils>=0.6.1a6
-neon_mq_connector @ git+https://github.com/neongeckocom/neon_mq_connector
+neon_mq_connector>=0.0.4
