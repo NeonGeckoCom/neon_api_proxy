@@ -33,7 +33,7 @@ def get_proxy_config() -> dict:
     if path.isfile(path.expanduser(config_path)):
         valid_config_path = path.expanduser(config_path)
     elif path.isfile(path.expanduser("~/.config/neon/credentials.json")):
-        valid_config_path = path.expanduser("~/.local/share/neon/credentials.json")
+        valid_config_path = path.expanduser("~/.config/neon/credentials.json")
     elif path.isfile(path.expanduser("~/.local/share/neon/credentials.json")):
         valid_config_path = path.expanduser("~/.local/share/neon/credentials.json")
     else:
