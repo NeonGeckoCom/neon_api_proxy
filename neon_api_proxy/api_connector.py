@@ -56,25 +56,29 @@ class NeonAPIMQConnector(MQConnector):
             :param method: MQ return method (pika.spec.Basic.Return)
             :param properties: MQ properties (pika.spec.BasicProperties)
             :param body: request body (bytes)
-
         """
-        if body and isinstance(body, bytes):
-            request = b64_to_dict(body)
-            LOG.debug(f"request={request}")
-            respond = self.proxy.resolve_query(request)
-            LOG.debug(f"respond={respond}")
-            data = dict_to_b64(respond)
+        message_id = None
+        try:
+            if body and isinstance(body, bytes):
+                request = b64_to_dict(body)
+                message_id = request.get("message_id")
+                respond = self.proxy.resolve_query(request)
+                LOG.debug(f"message={message_id} status={respond.get('status_code')}")
+                data = dict_to_b64(respond)
 
-            # queue declare is idempotent, just making sure queue exists
-            channel.queue_declare(queue='neon_api_output')
+                # queue declare is idempotent, just making sure queue exists
+                channel.queue_declare(queue='neon_api_output')
 
-            channel.basic_publish(exchange='',
-                                  routing_key='neon_api_output',
-                                  body=data,
-                                  properties=pika.BasicProperties(expiration='1000')
-                                  )
-        else:
-            raise TypeError(f'Invalid body received, expected: bytes string; got: {type(body)}')
+                channel.basic_publish(exchange='',
+                                      routing_key='neon_api_output',
+                                      body=data,
+                                      properties=pika.BasicProperties(expiration='1000')
+                                      )
+            else:
+                raise TypeError(f'Invalid body received, expected: bytes string; got: {type(body)}')
+        except Exception as e:
+            LOG.error(f"message_id={message_id}")
+            LOG.error(e)
 
     def run(self):
         self.run_consumers()

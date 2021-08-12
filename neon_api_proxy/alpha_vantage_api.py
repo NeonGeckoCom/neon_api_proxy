@@ -77,7 +77,7 @@ class AlphaVantageAPI(CachedAPI):
         :return: dict containing stock data from URL response
         """
         symbol = kwargs.get('symbol')
-        company = kwargs.get('company')
+        company = kwargs.get('company', kwargs.get('keywords'))
         search_term = symbol or company
         if not search_term:
             return {"status_code": -1,
