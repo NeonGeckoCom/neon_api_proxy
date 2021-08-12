@@ -57,12 +57,13 @@ class NeonAPIMQConnector(MQConnector):
             :param properties: MQ properties (pika.spec.BasicProperties)
             :param body: request body (bytes)
         """
+        message_id = None
         try:
             if body and isinstance(body, bytes):
                 request = b64_to_dict(body)
-                LOG.debug(f"request={request}")
+                message_id = request.get("message_id")
                 respond = self.proxy.resolve_query(request)
-                LOG.debug(f"respond={respond.get('status_code')}")
+                LOG.debug(f"message={message_id} status={respond.get('status_code')}")
                 data = dict_to_b64(respond)
 
                 # queue declare is idempotent, just making sure queue exists
@@ -76,6 +77,7 @@ class NeonAPIMQConnector(MQConnector):
             else:
                 raise TypeError(f'Invalid body received, expected: bytes string; got: {type(body)}')
         except Exception as e:
+            LOG.error(f"message_id={message_id}")
             LOG.error(e)
 
     def run(self):
