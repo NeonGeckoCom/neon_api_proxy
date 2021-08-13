@@ -4,6 +4,7 @@ import json
 from neon_api_proxy.owm_api import OpenWeatherAPI
 from neon_api_proxy.alpha_vantage_api import AlphaVantageAPI
 from neon_api_proxy.wolfram_api import WolframAPI
+from neon_api_proxy.test_api import TestAPI
 
 
 class NeonAPIProxyController:
@@ -15,7 +16,8 @@ class NeonAPIProxyController:
     service_class_mapping = {
         'wolfram_alpha': WolframAPI,
         'alpha_vantage': AlphaVantageAPI,
-        'open_weather_map': OpenWeatherAPI
+        'open_weather_map': OpenWeatherAPI,
+        'api_test_endpoint': TestAPI
     }
 
     def __init__(self, config: dict = None):
