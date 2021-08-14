@@ -29,6 +29,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get Version
+        id: version
         run: |
           VERSION=$(python setup.py --version)
           export tags=("${image_name}:latest","${image_name}:${VERSION}")
@@ -41,4 +42,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.tags }}
+          tags: ${{ steps.version.tags }}
