@@ -31,7 +31,7 @@ jobs:
       - name: Get Version
         run: |
           VERSION=$(python setup.py --version)
-          tags=$("${image_name}:latest","${image_name}:${VERSION}")
+          tags=("${image_name}:latest","${image_name}:${VERSION}")
           echo $tags
         env:
           image_name: ${{ env.IMAGE_NAME }}
