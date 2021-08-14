@@ -31,8 +31,10 @@ jobs:
       - name: Get Version
         run: |
           VERSION=$(python setup.py --version)
-          tags=$("${env.IMAGE_NAME}:latest","${env.IMAGE_NAME}:${VERSION}")
+          tags=$("${image_name}:latest","${image_name}:${VERSION}")
           echo $tags
+        with:
+          image_name: ${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
