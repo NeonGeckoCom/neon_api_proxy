@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
 
+ADD . /neon_api_proxy
+WORKDIR /neon_api_proxy
 RUN apt-get update && \
     apt-get install -y \
     gcc \
@@ -8,7 +10,7 @@ RUN apt-get update && \
     python3-venv  \
     python3-pip \
     && pip install wheel  \
-    && pip install neon-api-proxy
+    && pip install .
 
 WORKDIR /config
 
