@@ -12,7 +12,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build_image:
+  build_and_publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -31,7 +31,7 @@ jobs:
       - name: Get Version
         run: |
           VERSION=$(python setup.py --version)
-          tags=("${image_name}:latest","${image_name}:${VERSION}")
+          export tags=("${image_name}:latest","${image_name}:${VERSION}")
           echo $tags
         env:
           image_name: ${{ env.IMAGE_NAME }}
@@ -42,3 +42,5 @@ jobs:
           context: .
           push: true
           tags: ${tags}
+        env:
+          tags: ${{ env.tags }}
