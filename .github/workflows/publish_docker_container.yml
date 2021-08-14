@@ -33,7 +33,7 @@ jobs:
           VERSION=$(python setup.py --version)
           tags=$("${image_name}:latest","${image_name}:${VERSION}")
           echo $tags
-        with:
+        env:
           image_name: ${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
