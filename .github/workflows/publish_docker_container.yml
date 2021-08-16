@@ -31,7 +31,8 @@ jobs:
       - name: Get Version
         id: version
         run: |
-          export VERSION=$(python setup.py --version)
+          VERSION=$(python setup.py --version)
+          echo ::set-output name=version::${VERSION}
         env:
           image_name: ${{ env.IMAGE_NAME }}
 
@@ -41,7 +42,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=semver,pattern={{version}},value=${{ steps.version.VERSION }}
+            type=semver,pattern={{version}},value=${{ steps.version.outputs.version }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
