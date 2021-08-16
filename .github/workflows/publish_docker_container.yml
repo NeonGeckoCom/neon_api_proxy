@@ -31,17 +31,17 @@ jobs:
       - name: Get Version
         id: version
         run: |
-          VERSION=$(python setup.py --version)
-          export tags=("${image_name}:latest","${image_name}:${VERSION}")
-          echo $tags
+          export VERSION=$(python setup.py --version)
         env:
           image_name: ${{ env.IMAGE_NAME }}
 
       - name: Extract metadata for Docker
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v2
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.version.VERSION }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
