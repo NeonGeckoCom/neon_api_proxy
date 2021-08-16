@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM python:3.8
 
 ADD . /neon_api_proxy
 WORKDIR /neon_api_proxy
@@ -7,8 +7,6 @@ RUN apt-get update && \
     gcc \
     python3  \
     python3-dev  \
-    python3-venv  \
-    python3-pip \
     && pip install wheel  \
     && pip install .
 
