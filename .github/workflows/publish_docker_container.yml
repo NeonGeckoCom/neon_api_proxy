@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - master
+  workflow_run:
+    workflows:
+      - "Publish Alpha Build"
+    types:
+      - completed
   workflow_dispatch:
 
 env:
