@@ -22,4 +22,10 @@ Responses will be returned as dictionaries. Responses should contain the followi
 - `content` - Usually contains the HTTP content (bytes) from the requested API, but may include a string message for errors.
 - `encoding` = Usually contains the HTTP content encoding if content is the byte representation of a string, may be `None`
 
+## Docker Configuration
+When running this as a docker container, the path to configuration files should be mounted to `/config`.
 
+For example, if your configuration resides in `~/.config`:
+```commandline
+docker run -v /home/$USER/.config:/config neon_api_proxy
+```

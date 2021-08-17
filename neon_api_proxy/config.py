@@ -48,8 +48,8 @@ def get_mq_config() -> dict:
     Locates a valid MQ config for MQ Authentication
     :return: dict containing "MQ" key with server and users configurations
     """
-    if path.isfile("config.json"):
-        valid_config_path = "config.json"
+    if environ.get('NEON_MQ_CONFIG_PATH', 'config.json'):
+        valid_config_path = environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json')
     elif path.isfile(path.expanduser("~/.config/neon/mq_config.json")):
         valid_config_path = path.expanduser("~/.config/neon/mq_config.json")
     elif path.isfile(path.expanduser("~/.local/share/neon/mq_config.json")):
