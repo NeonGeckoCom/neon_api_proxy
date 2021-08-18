@@ -40,9 +40,6 @@ class NeonAPIMQConnector(MQConnector):
 
         self.vhost = '/neon_api'
         self.proxy = proxy
-        self.consumers = dict(neon_api_consumer=ConsumerThread(connection=self.create_mq_connection(vhost=self.vhost),
-                                                               queue='neon_api_input',
-                                                               callback_func=self.handle_api_input))
 
     def handle_api_input(self,
                          channel: pika.channel.Channel,
@@ -56,25 +53,36 @@ class NeonAPIMQConnector(MQConnector):
             :param method: MQ return method (pika.spec.Basic.Return)
             :param properties: MQ properties (pika.spec.BasicProperties)
             :param body: request body (bytes)
-
         """
-        if body and isinstance(body, bytes):
-            request = b64_to_dict(body)
-            LOG.debug(f"request={request}")
-            respond = self.proxy.resolve_query(request)
-            LOG.debug(f"respond={respond}")
-            data = dict_to_b64(respond)
+        message_id = None
+        try:
+            if body and isinstance(body, bytes):
+                request = b64_to_dict(body)
+                message_id = request.get("message_id")
+                respond = self.proxy.resolve_query(request)
+                LOG.debug(f"message={message_id} status={respond.get('status_code')}")
+                data = dict_to_b64(respond)
 
-            # queue declare is idempotent, just making sure queue exists
-            channel.queue_declare(queue='neon_api_output')
+                # queue declare is idempotent, just making sure queue exists
+                channel.queue_declare(queue='neon_api_output')
 
-            channel.basic_publish(exchange='',
-                                  routing_key='neon_api_output',
-                                  body=data,
-                                  properties=pika.BasicProperties(expiration='1000')
-                                  )
-        else:
-            raise TypeError(f'Invalid body received, expected: bytes string; got: {type(body)}')
+                channel.basic_publish(exchange='',
+                                      routing_key='neon_api_output',
+                                      body=data,
+                                      properties=pika.BasicProperties(expiration='1000')
+                                      )
+            else:
+                raise TypeError(f'Invalid body received, expected: bytes string; got: {type(body)}')
+        except Exception as e:
+            LOG.error(f"message_id={message_id}")
+            LOG.error(e)
+
+    def handle_error(self, thread, exception):
+        LOG.error(exception)
+        LOG.info(f"Restarting Consumers")
+        self.stop_consumers()
+        self.run()
 
     def run(self):
+        self.register_consumer("neon_api_consumer", self.vhost, 'neon_api_input', self.handle_api_input)
         self.run_consumers()
