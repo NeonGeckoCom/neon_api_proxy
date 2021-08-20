@@ -40,9 +40,6 @@ class NeonAPIMQConnector(MQConnector):
 
         self.vhost = '/neon_api'
         self.proxy = proxy
-        self.consumers = dict(neon_api_consumer=ConsumerThread(connection=self.create_mq_connection(vhost=self.vhost),
-                                                               queue='neon_api_input',
-                                                               callback_func=self.handle_api_input))
 
     def handle_api_input(self,
                          channel: pika.channel.Channel,
@@ -80,5 +77,12 @@ class NeonAPIMQConnector(MQConnector):
             LOG.error(f"message_id={message_id}")
             LOG.error(e)
 
+    def handle_error(self, thread, exception):
+        LOG.error(exception)
+        LOG.info(f"Restarting Consumers")
+        self.stop_consumers()
+        self.run()
+
     def run(self):
+        self.register_consumer("neon_api_consumer", self.vhost, 'neon_api_input', self.handle_api_input)
         self.run_consumers()
