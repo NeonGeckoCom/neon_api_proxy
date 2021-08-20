@@ -43,8 +43,7 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
-          password: ${{secrets.TEST_PYPI_TOKEN}}
-          repository_url: https://test.pypi.org/legacy/
+          password: ${{secrets.PYPI_TOKEN}}
 
   build_and_publish_docker:
     runs-on: ubuntu-latest
