@@ -32,8 +32,7 @@ jobs:
         id: version
         run: |
           python version_bump.py
-          VER=$(python setup.py --version)
-          echo ::set-output name=version::${VER}
+          echo ::set-output name=version::$(python setup.py --version)
       - name: Push Version Change
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
@@ -72,7 +71,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=semver,pattern={{version}},value=${{ needs.build_and_publish.outputs.version }}
+            type=semver,pattern={{version}},value=${{ needs.build_and_publish_pypi.outputs.version }}
             type=ref,event=branch
 
       - name: Build and push Docker image
