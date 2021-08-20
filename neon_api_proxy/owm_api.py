@@ -42,10 +42,12 @@ class OpenWeatherAPI(CachedAPI):
           'lat' - str latitude
           'lng' - str longitude
           'units' - optional string "metric" or "imperial"
+          'base_url' - base URL to target
         :return: dict containing `status_code`, `content`, `encoding` from URL response
         """
         lat = kwargs.get("lat")
         lng = kwargs.get("lng", kwargs.get("lon"))
+        api = kwargs.get('api') or "onecall"
         units = "metric" if kwargs.get("units") == "metric" else "imperial"
 
         if not all((lat, lng, units)):
@@ -53,7 +55,7 @@ class OpenWeatherAPI(CachedAPI):
                     "content": f"Missing required args in: {kwargs}",
                     "encoding": None}
         try:
-            resp = self._get_api_response(lat, lng, units)
+            resp = self._get_api_response(lat, lng, units, api)
         except Exception as e:
             return {"status_code": -1,
                     "content": repr(e),
@@ -64,7 +66,8 @@ class OpenWeatherAPI(CachedAPI):
                 "content": resp.content,
                 "encoding": resp.encoding}
 
-    def _get_api_response(self, lat: str, lng: str, units: str) -> Response:
+    def _get_api_response(self, lat: str, lng: str, units: str,
+                          api: str = "onecall") -> Response:
         str(float(lat))
         str(float(lng))
         assert units in ("metric", "imperial", "standard")
@@ -73,6 +76,7 @@ class OpenWeatherAPI(CachedAPI):
                         "appid": self._api_key,
                         "units": units}
         query_str = urllib.parse.urlencode(query_params)
-        resp = self.get_with_cache_timeout(f"http://api.openweathermap.org/data/2.5/onecall?{query_str}",
+        base_url = "http://api.openweathermap.org/data/2.5"
+        resp = self.get_with_cache_timeout(f"{base_url}/{api}?{query_str}",
                                            self.cache_timeout)
         return resp
