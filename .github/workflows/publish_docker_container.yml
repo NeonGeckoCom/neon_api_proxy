@@ -1,16 +1,10 @@
 # This workflow will generate a release distribution and upload it to PyPI
 
-name: Publish Docker Image
+name: Publish Release Docker Image
 on:
   push:
     branches:
       - master
-  workflow_run:
-    workflows:
-      - "Publish Alpha Build"
-    types:
-      - completed
-  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
