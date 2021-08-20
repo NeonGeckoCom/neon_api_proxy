@@ -7,7 +7,10 @@ on:
       - dev
     paths-ignore:
       - 'version.py'
-  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build_and_publish_pypi:
