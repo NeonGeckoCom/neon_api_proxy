@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_and_publish:
+  build_and_publish_pypi:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -41,7 +41,7 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
-          password: ${{secrets.PYPI_TOKEN}}
+          password: ${{secrets.TEST_PYPI_TOKEN}}
           repository_url: https://test.pypi.org/legacy/
 
   build_and_publish_docker:
