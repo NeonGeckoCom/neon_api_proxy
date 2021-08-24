@@ -27,7 +27,6 @@ from requests import Response
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from neon_api_proxy.owm_api import OpenWeatherAPI
 
-
 VALID_LAT = "47.4797"
 VALID_LNG = "-122.2079"
 
@@ -40,6 +39,16 @@ INVALID_LNG = "b"
 VALID_QUERY = {"lat": "47.6769",
                "lng": "-122.2060",
                "units": "imperial"}
+
+VALID_QUERY_ONECALL = {"lat": "47.6769",
+                       "lng": "-122.2060",
+                       "units": "imperial",
+                       "api": "onecall"}
+
+VALID_QUERY_CURRENT = {"lat": "47.6769",
+                       "lng": "-122.2060",
+                       "units": "imperial",
+                       "api": "weather"}
 
 VALID_QUERY_NO_UNITS = {"lat": "47.6769",
                         "lng": "-122.2060"}
@@ -82,6 +91,20 @@ class TestOpenWeatherAPI(unittest.TestCase):
 
     def test_handle_query_valid(self):
         resp = self.api.handle_query(**VALID_QUERY)
+        self.assertIsInstance(resp, dict)
+        self.assertEqual(resp["status_code"], 200)
+        self.assertEqual(resp["encoding"], "utf-8")
+        self.assertIsInstance(json.loads(resp["content"]), dict)
+
+    def test_handle_query_valid_onecall(self):
+        resp = self.api.handle_query(**VALID_QUERY_ONECALL)
+        self.assertIsInstance(resp, dict)
+        self.assertEqual(resp["status_code"], 200)
+        self.assertEqual(resp["encoding"], "utf-8")
+        self.assertIsInstance(json.loads(resp["content"]), dict)
+
+    def test_handle_query_valid_current(self):
+        resp = self.api.handle_query(**VALID_QUERY_CURRENT)
         self.assertIsInstance(resp, dict)
         self.assertEqual(resp["status_code"], 200)
         self.assertEqual(resp["encoding"], "utf-8")

@@ -43,14 +43,14 @@ class NeonAPIMQConnector(MQConnector):
 
     def handle_api_input(self,
                          channel: pika.channel.Channel,
-                         method: pika.spec.Basic.Return,
+                         method: pika.spec.Basic.Deliver,
                          properties: pika.spec.BasicProperties,
                          body: bytes):
         """
             Handles input requests from MQ to Neon API
 
             :param channel: MQ channel object (pika.channel.Channel)
-            :param method: MQ return method (pika.spec.Basic.Return)
+            :param method: MQ return method (pika.spec.Basic.Deliver)
             :param properties: MQ properties (pika.spec.BasicProperties)
             :param body: request body (bytes)
         """
@@ -67,10 +67,11 @@ class NeonAPIMQConnector(MQConnector):
                 channel.queue_declare(queue='neon_api_output')
 
                 channel.basic_publish(exchange='',
-                                      routing_key='neon_api_output',
+                                      routing_key=request.get('routing_key', 'neon_api_output'),
                                       body=data,
                                       properties=pika.BasicProperties(expiration='1000')
                                       )
+                channel.basic_ack(method.delivery_tag)
             else:
                 raise TypeError(f'Invalid body received, expected: bytes string; got: {type(body)}')
         except Exception as e:
@@ -84,5 +85,5 @@ class NeonAPIMQConnector(MQConnector):
         self.run()
 
     def run(self):
-        self.register_consumer("neon_api_consumer", self.vhost, 'neon_api_input', self.handle_api_input)
+        self.register_consumer("neon_api_consumer", self.vhost, 'neon_api_input', self.handle_api_input, auto_ack=False)
         self.run_consumers()
