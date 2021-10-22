@@ -90,8 +90,8 @@ class NeonAPIMQConnector(MQConnector):
         """
             Extracts tokens from msg data based on received "agent"
 
-            :@param msg_data: desired message data
-            :@return: dictionary containing tokens dedicated to resolved agent
+            :param msg_data: desired message data
+            :return: dictionary containing tokens dedicated to resolved agent
         """
         tokens = dict()
         request_agent = msg_data.pop('agent', 'undefined')
