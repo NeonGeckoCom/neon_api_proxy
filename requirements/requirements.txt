@@ -1,4 +1,4 @@
 requests-cache==0.6.4
 requests~=2.25
 neon_utils==0.6.2
-neon_mq_connector==0.1.2
+neon_mq_connector>=0.1.3a1
