@@ -58,10 +58,11 @@ class NeonAPIMQConnector(MQConnector):
         try:
             if body and isinstance(body, bytes):
                 request = b64_to_dict(body)
-                message_id = request.get("message_id", request.get('messageID', None))
+                tokens = self.extract_agent_tokens(request)
+
+                message_id = tokens.get('message_id', request.get("message_id", None))
                 LOG.info(f"request={request}; message_id={message_id}")
 
-                tokens = self.extract_agent_tokens(request)
                 respond = self.proxy.resolve_query(request)
                 LOG.info(f"message={message_id} status={respond.get('status_code')}")
 
