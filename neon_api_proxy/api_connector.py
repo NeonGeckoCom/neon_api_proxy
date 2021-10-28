@@ -60,7 +60,7 @@ class NeonAPIMQConnector(MQConnector):
                 request = b64_to_dict(body)
                 tokens = self.extract_agent_tokens(request)
 
-                message_id = tokens.get('message_id', request.get("message_id", None))
+                message_id = tokens.pop('message_id', request.get("message_id", None))
                 LOG.info(f"request={request}; message_id={message_id}")
 
                 respond = self.proxy.resolve_query(request)
@@ -99,7 +99,7 @@ class NeonAPIMQConnector(MQConnector):
         if 'klatchat' in request_agent:
             LOG.info('Resolved agent is "klatchat"')
             tokens['cid'] = msg_data.pop("cid", None)
-            tokens['replied_message'] = msg_data.get('messageID', None)
+            tokens['message_id'] = tokens['replied_message'] = msg_data.get('messageID', None)
         else:
             LOG.warning('Failed to resolve an agent from the message data')
         return tokens
