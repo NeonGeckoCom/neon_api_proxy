@@ -19,6 +19,7 @@
 
 import pika.channel
 
+from typing import Optional
 from neon_utils import LOG
 from neon_utils.socket_utils import b64_to_dict, dict_to_b64
 from neon_mq_connector.connector import MQConnector, ConsumerThread
@@ -116,3 +117,11 @@ class NeonAPIMQConnector(MQConnector):
                                self.vhost,
                                f'neon_api_input_{self.service_id}',
                                self.handle_api_input, auto_ack=False)
+
+    # TODO: Remove below methods after MQ Connector dep bumped to 0.2.0 DM
+    def run(self, **kwargs):
+        self.pre_run(**kwargs)
+        self.run_consumers()
+
+    def stop(self):
+        pass
