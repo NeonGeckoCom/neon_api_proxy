@@ -67,7 +67,10 @@ class NeonAPIMQConnector(MQConnector):
                 respond = self.proxy.resolve_query(request)
                 LOG.info(f"message={message_id} status={respond.get('status_code')}")
 
-                respond['content'] = bytes(respond.get('content', '')).decode(encoding='utf-8')
+                try:
+                    respond['content'] = bytes(respond.get('content', b'')).decode(encoding='utf-8')
+                except Exception as e:
+                    LOG.error(e)
                 respond = {**respond, **tokens}
                 LOG.debug(f"respond={respond}")
                 data = dict_to_b64(respond)
