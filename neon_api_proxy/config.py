@@ -29,14 +29,17 @@ def get_proxy_config() -> dict:
     Locates a valid configuration file for proxy service credentials
     :return: dict containing "SERVICES" key with proxy service configurations
     """
-    config_path = environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json')
-    if path.isfile(path.expanduser(config_path)):
-        valid_config_path = path.expanduser(config_path)
-    elif path.isfile(path.expanduser("~/.config/neon/credentials.json")):
-        valid_config_path = path.expanduser("~/.config/neon/credentials.json")
-    elif path.isfile(path.expanduser("~/.local/share/neon/credentials.json")):
-        valid_config_path = path.expanduser("~/.local/share/neon/credentials.json")
-    else:
+    valid_config_paths = [
+        environ.get('NEON_API_PROXY_CONFIG_PATH'),
+        path.expanduser("~/.config/neon/credentials.json"),
+        path.expanduser("~/.local/share/neon/credentials.json")
+    ]
+    valid_config_path = None
+    for p in valid_config_paths:
+        if p and path.isfile(p):
+            valid_config_path = p
+            break
+    if not valid_config_path:
         return dict()
     with open(valid_config_path) as input_file:
         proxy_service_config = json.load(input_file)
@@ -44,12 +47,13 @@ def get_proxy_config() -> dict:
 
 
 def get_mq_config() -> dict:
+    # TODO: Deprecate after mq_controller bumped to 0.3 DM
     """
     Locates a valid MQ config for MQ Authentication
     :return: dict containing "MQ" key with server and users configurations
     """
     if path.isfile(environ.get('NEON_MQ_CONFIG_PATH', 'config.json')):
-        valid_config_path = environ.get('NEON_API_PROXY_CONFIG_PATH', 'config.json')
+        valid_config_path = environ.get('NEON_MQ_CONFIG_PATH', 'config.json')
     elif path.isfile(path.expanduser("~/.config/neon/mq_config.json")):
         valid_config_path = path.expanduser("~/.config/neon/mq_config.json")
     elif path.isfile(path.expanduser("~/.local/share/neon/mq_config.json")):

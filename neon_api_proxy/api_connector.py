@@ -19,6 +19,7 @@
 
 import pika.channel
 
+from typing import Optional
 from neon_utils import LOG
 from neon_utils.socket_utils import b64_to_dict, dict_to_b64
 from neon_mq_connector.connector import MQConnector, ConsumerThread
@@ -66,7 +67,10 @@ class NeonAPIMQConnector(MQConnector):
                 respond = self.proxy.resolve_query(request)
                 LOG.info(f"message={message_id} status={respond.get('status_code')}")
 
-                respond['content'] = bytes(respond.get('content', '')).decode(encoding='utf-8')
+                try:
+                    respond['content'] = bytes(respond.get('content', b'')).decode(encoding='utf-8')
+                except Exception as e:
+                    LOG.error(e)
                 respond = {**respond, **tokens}
                 LOG.debug(f"respond={respond}")
                 data = dict_to_b64(respond)
@@ -116,3 +120,11 @@ class NeonAPIMQConnector(MQConnector):
                                self.vhost,
                                f'neon_api_input_{self.service_id}',
                                self.handle_api_input, auto_ack=False)
+
+    # TODO: Remove below methods after MQ Connector dep bumped to 0.2.0 DM
+    def run(self, **kwargs):
+        self.pre_run(**kwargs)
+        self.run_consumers()
+
+    def stop(self):
+        pass
