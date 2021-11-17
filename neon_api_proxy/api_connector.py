@@ -120,3 +120,11 @@ class NeonAPIMQConnector(MQConnector):
                                self.vhost,
                                f'neon_api_input_{self.service_id}',
                                self.handle_api_input, auto_ack=False)
+
+    # TODO: Remove below methods after MQ Connector dep bumped to 0.2.0 DM
+    def run(self, **kwargs):
+        self.pre_run(**kwargs)
+        self.run_consumers()
+
+    def stop(self):
+        pass
