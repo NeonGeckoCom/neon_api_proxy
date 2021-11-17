@@ -23,9 +23,11 @@ Responses will be returned as dictionaries. Responses should contain the followi
 - `encoding` = Usually contains the HTTP content encoding if content is the byte representation of a string, may be `None`
 
 ## Docker Configuration
-When running this as a docker container, the path to configuration files should be mounted to `/config`.
+When running this as a docker container, the path to configuration files should be mounted to `/config`. This container 
+expects `mq_config.json` to contain service `neon_api_connector` and `ngi_auth_vars.yml` to contain dict `api_services`.
 
 For example, if your configuration resides in `~/.config`:
-```commandline
-docker run -v /home/$USER/.config:/config neon_api_proxy
+```shell
+export CONFIG_PATH="/home/${USER}/.config"
+docker run -v ${CONFIG_PATH}:/config neon_api_proxy
 ```
