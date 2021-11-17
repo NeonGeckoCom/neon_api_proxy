@@ -11,11 +11,6 @@ RUN apt-get update && \
     && pip install .
 
 ENV NEON_CONFIG_PATH /config
-
-# TODO: Deprecate below after updating to neon_mq_connector 0.2.0+ DM
 ENV NEON_MQ_CONFIG_PATH /config/config.json
-
-# TODO: Deprecate below after updating to ngi_auth_vars internally
-ENV NEON_API_PROXY_CONFIG_PATH /config/config.json
 
 CMD ["neon_api_proxy"]
