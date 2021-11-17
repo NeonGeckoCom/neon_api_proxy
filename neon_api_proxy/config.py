@@ -21,7 +21,7 @@ import json
 
 from os import environ, path
 
-# TODO: Consider moving these utils to neon_utils package
+# TODO: Consider moving this to neon_utils package
 
 
 def get_proxy_config() -> dict:
@@ -44,22 +44,3 @@ def get_proxy_config() -> dict:
     with open(valid_config_path) as input_file:
         proxy_service_config = json.load(input_file)
     return proxy_service_config
-
-
-def get_mq_config() -> dict:
-    # TODO: Deprecate after mq_controller bumped to 0.3 DM
-    """
-    Locates a valid MQ config for MQ Authentication
-    :return: dict containing "MQ" key with server and users configurations
-    """
-    if path.isfile(environ.get('NEON_MQ_CONFIG_PATH', 'config.json')):
-        valid_config_path = environ.get('NEON_MQ_CONFIG_PATH', 'config.json')
-    elif path.isfile(path.expanduser("~/.config/neon/mq_config.json")):
-        valid_config_path = path.expanduser("~/.config/neon/mq_config.json")
-    elif path.isfile(path.expanduser("~/.local/share/neon/mq_config.json")):
-        valid_config_path = path.expanduser("~/.local/share/neon/mq_config.json")
-    else:
-        return dict()
-    with open(valid_config_path) as input_file:
-        mq_config = json.load(input_file)
-    return mq_config
