@@ -23,7 +23,7 @@ import socketserver
 from ovos_utils import wait_for_exit_signal
 
 from neon_api_proxy.api_connector import NeonAPIMQConnector
-from neon_api_proxy.config import get_proxy_config, get_mq_config
+from neon_api_proxy.config import get_proxy_config
 from neon_api_proxy.controller import NeonAPIProxyController
 from neon_api_proxy.socket_handler import NeonAPITCPHandler
 
@@ -58,7 +58,7 @@ def run_mq_handler():
     """
     config_data = get_proxy_config()
     proxy = NeonAPIProxyController(config_data)
-    connector = NeonAPIMQConnector(config=get_mq_config(), service_name='neon_api_connector', proxy=proxy)
+    connector = NeonAPIMQConnector(config=None, service_name='neon_api_connector', proxy=proxy)
     connector.run()
     wait_for_exit_signal()
 
