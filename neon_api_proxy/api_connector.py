@@ -16,7 +16,6 @@
 # Specialized conversational reconveyance options from Conversation Processing Intelligence Corp.
 # US Patents 2008-2021: US7424516, US20140161250, US20140177813, US8638908, US8068604, US8553852, US10530923, US10530924
 # China Patent: CN102017585  -  Europe Patent: EU2156652  -  Patents Pending
-from time import sleep
 
 import pika.channel
 
@@ -116,26 +115,6 @@ class NeonAPIMQConnector(MQConnector):
         self.run()
 
     def pre_run(self, **kwargs):
-        # TODO: Import from neon_utils, consider moving to mq_connector DM
-        import socket
-
-        def check_port_state(addr: str, port: int) -> bool:
-            """
-            Checks if the specified port at addr is open
-            :param addr: IP or URL to query
-            :param port: port to check
-            :returns: True if the port is reachable, else False
-            """
-            test_connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            status = test_connection.connect_ex((addr, port))
-            return status == 0
-
-        if not check_port_state(self.config.get('server', 'localhost'), int(self.config.get('port', '5672'))):
-            while not check_port_state(self.config.get('server', 'localhost'), int(self.config.get('port', '5672'))):
-                LOG.debug("Waiting for MQ server to come online")
-                sleep(2)
-            sleep(10)  # TODO: Find a better method for waiting for server to come online
-
         self.register_consumer("neon_api_consumer", self.vhost, 'neon_api_input', self.handle_api_input, auto_ack=False)
         self.register_consumer("neon_api_consumer_targeted",
                                self.vhost,
