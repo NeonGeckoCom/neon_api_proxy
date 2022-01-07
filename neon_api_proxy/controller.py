@@ -24,7 +24,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from neon_utils.configuration_utils import NGIConfig
+from neon_utils.configuration_utils import get_neon_auth_config, LOG
 
 from neon_api_proxy.owm_api import OpenWeatherAPI
 from neon_api_proxy.alpha_vantage_api import AlphaVantageAPI
@@ -49,7 +49,7 @@ class NeonAPIProxyController:
         """
             @param config: configurations dictionary
         """
-        self.config = config or NGIConfig("ngi_auth_vars")["api_services"]
+        self.config = config or get_neon_auth_config()["api_services"]
         self.service_instance_mapping = self.init_service_instances(self.service_class_mapping)
 
     def init_service_instances(self, service_class_mapping: dict) -> dict:
@@ -64,7 +64,10 @@ class NeonAPIProxyController:
         service_mapping = dict()
         for item in list(service_class_mapping):
             api_key = self.config.get("SERVICES", self.config).get(item, {}).get("api_key") if self.config else None
-            service_mapping[item] = service_class_mapping[item](api_key=api_key)
+            try:
+                service_mapping[item] = service_class_mapping[item](api_key=api_key)
+            except Exception as e:
+                LOG.error(e)
         return service_mapping
 
     def resolve_query(self, query: dict) -> dict:
