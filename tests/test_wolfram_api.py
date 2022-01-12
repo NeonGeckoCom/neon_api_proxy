@@ -209,8 +209,8 @@ class TestWolframAPI(unittest.TestCase):
     def test_get_wolfram_alpha_bytes_response(self):
         resp = self.api.handle_query(api="simple",
                                      query="Who is the prime minister of India")
-        if resp != "Wolfram|Alpha did not understand your input":
-            self.assertIsInstance(resp, bytes)
+        if resp["content"] != "Wolfram|Alpha did not understand your input":
+            self.assertIsInstance(resp["content"], bytes)
 
 
 if __name__ == '__main__':
