@@ -25,8 +25,3 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-from neon_api_proxy.services.wolfram_api import *
-from neon_utils.logger import LOG
-LOG.warning("This reference is deprecated, import from neon_api_proxy.services")
-# TODO: Deprecate in v1.0.0

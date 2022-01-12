@@ -28,10 +28,10 @@
 
 from neon_utils.configuration_utils import get_neon_auth_config, LOG
 
-from neon_api_proxy.owm_api import OpenWeatherAPI
-from neon_api_proxy.alpha_vantage_api import AlphaVantageAPI
-from neon_api_proxy.wolfram_api import WolframAPI
-from neon_api_proxy.test_api import TestAPI
+from neon_api_proxy.services.owm_api import OpenWeatherAPI
+from neon_api_proxy.services.alpha_vantage_api import AlphaVantageAPI
+from neon_api_proxy.services.wolfram_api import WolframAPI
+from neon_api_proxy.services.test_api import TestAPI
 
 
 class NeonAPIProxyController:
@@ -78,7 +78,7 @@ class NeonAPIProxyController:
             @param query: dictionary with query parameters
             @return: response from the destination service
         """
-        target_service = query.get('service', None)
+        target_service = query.get('service')
         message_id = query.pop('message_id', None)
         if target_service and target_service in list(self.service_instance_mapping):
             resp = self.service_instance_mapping[target_service].handle_query(**query)
