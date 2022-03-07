@@ -26,7 +26,43 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from neon_api_proxy.services.wolfram_api import *
-from neon_utils.logger import LOG
-LOG.warning("This reference is deprecated, import from neon_api_proxy.services")
-# TODO: Deprecate in v1.0.0
+# import json
+#
+# from neon_api_proxy.client import NeonAPI, request_api
+
+
+def search_stock_by_name(company: str, **kwargs) -> list:
+    """
+    Queries FMP for stocks matching the specified company
+    :param company: Company name/stock search term
+    :param kwargs:
+      'api_key' - optional str api_key to use for query
+      'exchange' - optional preferred exchange (default None)
+    :return: list of dict matched stock data (`name`, `symbol`)
+    """
+    raise NotImplementedError("API Not implemented")
+    # resp = query_fmp_api(f"https://financialmodelingprep.com/api/v3/search?{urllib.parse.urlencode(query_params)}")
+    # query_params = {**kwargs, **{"api": "symbol",
+    #                              "query": company,
+    #                              "limit": 10}}
+    # resp = request_api(NeonAPI.FINANCIAL_MODELING_PREP, query_params)
+    # data = json.loads(resp["content"])
+    # return data
+
+
+def get_stock_quote(symbol: str, **kwargs) -> dict:
+    """
+    Queries FMP for stock information for the specified company
+    :param symbol: Stock ticker symbol
+    :param kwargs:
+      'api_key' - optional str api_key to use for query
+    :return: dict stock data
+    """
+    raise NotImplementedError("API Not implemented")
+    # resp = query_fmp_api(f"https://financialmodelingprep.com/api/v3/company/profile/{symbol}?"
+    #                      f"{urllib.parse.urlencode(query_params)}")
+    # query_params = {**kwargs, **{"api": "quote",
+    #                              "symbol": symbol}}
+    # resp = request_api(NeonAPI.FINANCIAL_MODELING_PREP, query_params)
+    # data = json.loads(resp["content"])
+    # return data.get("profile")
