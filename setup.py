@@ -26,7 +26,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from setuptools import setup
+from setuptools import setup, find_packages
 from os import getenv, path
 
 
@@ -67,7 +67,7 @@ setup(
     author='Neongecko',
     author_email='developers@neon.ai',
     license='NeonAI License v1.0',
-    packages=['neon_api_proxy'],
+    packages=find_packages(),
     install_requires=get_requirements("requirements.txt"),
     zip_safe=True,
     classifiers=[
