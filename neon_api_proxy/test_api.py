@@ -1,7 +1,9 @@
-# NEON AI (TM) SOFTWARE, Software Development Kit & Application Development System
+# NEON AI (TM) SOFTWARE, Software Development Kit & Application Framework
 # All trademark and other rights reserved by their respective owners
-# Copyright 2008-2021 Neongecko.com Inc.
-# BSD-3
+# Copyright 2008-2022 Neongecko.com Inc.
+# Contributors: Daniel McKnight, Guy Daniels, Elon Gasper, Richard Leeds,
+# Regina Bloomstine, Casimiro Ferreira, Andrii Pernatii, Kirill Hrymailo
+# BSD-3 License
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # 1. Redistributions of source code must retain the above copyright notice,
@@ -24,27 +26,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import urllib.parse
-
-from enum import Enum
-from neon_utils.log_utils import LOG
-from neon_utils.authentication_utils import find_neon_wolfram_key
-from neon_api_proxy.cached_api import CachedAPI
-
-
-class TestAPI(CachedAPI):
-    """
-    API for querying Wolfram|Alpha.
-    """
-
-    def __init__(self, api_key: str = None):
-        super().__init__("Test")
-
-    def handle_query(self, **kwargs) -> dict:
-        """
-        Handles an incoming query and provides a response
-        :return: dict containing `status_code`, `content`, `encoding` from URL response
-        """
-        return {"status_code": 200,
-                "content": "Success",
-                "encoding": None}
+from neon_api_proxy.services.test_api import *
+from neon_utils.logger import LOG
+LOG.warning("This reference is deprecated, import from neon_api_proxy.services")
+# TODO: Deprecate in v1.0.0

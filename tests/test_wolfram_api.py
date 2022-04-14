@@ -1,7 +1,9 @@
-# NEON AI (TM) SOFTWARE, Software Development Kit & Application Development System
+# NEON AI (TM) SOFTWARE, Software Development Kit & Application Framework
 # All trademark and other rights reserved by their respective owners
-# Copyright 2008-2021 Neongecko.com Inc.
-# BSD-3
+# Copyright 2008-2022 Neongecko.com Inc.
+# Contributors: Daniel McKnight, Guy Daniels, Elon Gasper, Richard Leeds,
+# Regina Bloomstine, Casimiro Ferreira, Andrii Pernatii, Kirill Hrymailo
+# BSD-3 License
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # 1. Redistributions of source code must retain the above copyright notice,
@@ -203,6 +205,12 @@ class TestWolframAPI(unittest.TestCase):
                                      lat="47.4797",
                                      lng="-122.2079")
         self.assertEqual(resp, same)
+
+    def test_get_wolfram_alpha_bytes_response(self):
+        resp = self.api.handle_query(api="simple",
+                                     query="Who is the prime minister of India")
+        if resp["content"] != "Wolfram|Alpha did not understand your input":
+            self.assertIsInstance(resp["content"], bytes)
 
 
 if __name__ == '__main__':

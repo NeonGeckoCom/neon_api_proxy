@@ -64,11 +64,17 @@ jobs:
       - name: Test OWM API
         run: |
           pytest tests/test_owm_api.py --doctest-modules --junitxml=tests/owm-api-test-results.xml
-      - name: Test Generic API
-        run: |
-          pytest tests/test_generic_controller.py --doctest-modules --junitxml=tests/generic-controller-test-results.xml
       - name: Upload Open Weather Map API test results
         uses: actions/upload-artifact@v2
         with:
           name: owm-api-test-results
           path: tests/owm-api-test-results.xml
+
+      - name: Test Generic API
+        run: |
+          pytest tests/test_generic_controller.py --doctest-modules --junitxml=tests/generic-controller-test-results.xml
+      - name: Upload Generic API test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: generic-controller-test-results
+          path: tests/generic-controller-test-results.xml

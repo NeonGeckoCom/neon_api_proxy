@@ -1,7 +1,9 @@
-# NEON AI (TM) SOFTWARE, Software Development Kit & Application Development System
+# NEON AI (TM) SOFTWARE, Software Development Kit & Application Framework
 # All trademark and other rights reserved by their respective owners
-# Copyright 2008-2021 Neongecko.com Inc.
-# BSD-3
+# Copyright 2008-2022 Neongecko.com Inc.
+# Contributors: Daniel McKnight, Guy Daniels, Elon Gasper, Richard Leeds,
+# Regina Bloomstine, Casimiro Ferreira, Andrii Pernatii, Kirill Hrymailo
+# BSD-3 License
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # 1. Redistributions of source code must retain the above copyright notice,
@@ -24,12 +26,12 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from neon_utils.configuration_utils import NGIConfig
+from neon_utils.configuration_utils import get_neon_auth_config, LOG
 
-from neon_api_proxy.owm_api import OpenWeatherAPI
-from neon_api_proxy.alpha_vantage_api import AlphaVantageAPI
-from neon_api_proxy.wolfram_api import WolframAPI
-from neon_api_proxy.test_api import TestAPI
+from neon_api_proxy.services.owm_api import OpenWeatherAPI
+from neon_api_proxy.services.alpha_vantage_api import AlphaVantageAPI
+from neon_api_proxy.services.wolfram_api import WolframAPI
+from neon_api_proxy.services.test_api import TestAPI
 
 
 class NeonAPIProxyController:
@@ -49,7 +51,7 @@ class NeonAPIProxyController:
         """
             @param config: configurations dictionary
         """
-        self.config = config or NGIConfig("ngi_auth_vars")["api_services"]
+        self.config = config or get_neon_auth_config()["api_services"]
         self.service_instance_mapping = self.init_service_instances(self.service_class_mapping)
 
     def init_service_instances(self, service_class_mapping: dict) -> dict:
@@ -64,7 +66,10 @@ class NeonAPIProxyController:
         service_mapping = dict()
         for item in list(service_class_mapping):
             api_key = self.config.get("SERVICES", self.config).get(item, {}).get("api_key") if self.config else None
-            service_mapping[item] = service_class_mapping[item](api_key=api_key)
+            try:
+                service_mapping[item] = service_class_mapping[item](api_key=api_key)
+            except Exception as e:
+                LOG.error(e)
         return service_mapping
 
     def resolve_query(self, query: dict) -> dict:
@@ -73,7 +78,7 @@ class NeonAPIProxyController:
             @param query: dictionary with query parameters
             @return: response from the destination service
         """
-        target_service = query.get('service', None)
+        target_service = query.get('service')
         message_id = query.pop('message_id', None)
         if target_service and target_service in list(self.service_instance_mapping):
             resp = self.service_instance_mapping[target_service].handle_query(**query)
