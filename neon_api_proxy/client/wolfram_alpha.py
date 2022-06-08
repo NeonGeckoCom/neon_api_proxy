@@ -67,9 +67,12 @@ def get_wolfram_alpha_response(query: str, api: QueryApi, units: str = "metric",
         LOG.error(f"Non-success response: {resp}")  # TODO: Handle failures
         if resp["status_code"] == 403:
             LOG.error(f"Invalid credential provided.")
-    if resp.get("encoding"):
+    if isinstance(resp.get("content"), str):
+        return resp["content"]
+    elif resp.get("encoding"):
         return resp["content"].decode(resp["encoding"])
     else:
+        LOG.info("Returning bytes content")
         return resp["content"]
 
 
