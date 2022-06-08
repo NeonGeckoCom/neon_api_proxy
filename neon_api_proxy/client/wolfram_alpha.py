@@ -70,7 +70,11 @@ def get_wolfram_alpha_response(query: str, api: QueryApi, units: str = "metric",
     if isinstance(resp.get("content"), str):
         return resp["content"]
     elif resp.get("encoding"):
-        return resp["content"].decode(resp["encoding"])
+        try:
+            return resp["content"].decode(resp["encoding"])
+        except Exception as e:
+            LOG.exception(e)
+            return resp.get("content")
     else:
         LOG.info("Returning bytes content")
         return resp["content"]
