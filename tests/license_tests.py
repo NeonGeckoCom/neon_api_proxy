@@ -10,10 +10,13 @@ license_overrides = {
     'yt-dlp': "Unlicense",
     'pyxdg': 'GPL-2.0',
     'ptyprocess': 'ISC license',
-    'psutil': 'BSD3'
+    'psutil': 'BSD3',
+    "python-dateutil": "Apache-2.0",
+    "pyparsing": "MIT",
+    "exceptiongroup": "MIT"
 }
 # explicitly allow these packages that would fail otherwise
-whitelist = []
+whitelist = ["neon-api-proxy"]
 
 # validation flags
 allow_nonfree = False
