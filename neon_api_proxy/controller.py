@@ -26,8 +26,11 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from neon_utils.configuration_utils import get_neon_auth_config, LOG
-
+from os.path import join, isfile
+from ovos_utils.log import LOG
+from ovos_config.config import Configuration
+from neon_utils.configuration_utils import NGIConfig, init_config_dir, \
+    get_config_dir
 from neon_api_proxy.services.owm_api import OpenWeatherAPI
 from neon_api_proxy.services.alpha_vantage_api import AlphaVantageAPI
 from neon_api_proxy.services.wolfram_api import WolframAPI
@@ -51,8 +54,19 @@ class NeonAPIProxyController:
         """
             @param config: configurations dictionary
         """
-        self.config = config or get_neon_auth_config()["api_services"]
-        self.service_instance_mapping = self.init_service_instances(self.service_class_mapping)
+        self.config = config or self._init_config()
+        self.service_instance_mapping = self.init_service_instances(
+            self.service_class_mapping)
+
+    @staticmethod
+    def _init_config() -> dict:
+        init_config_dir()
+        legacy_config_file = join(get_config_dir(), "ngi_auth_vars.yml")
+        if isfile(legacy_config_file):
+            LOG.warning(f"Legacy configuration found at: {legacy_config_file}")
+            return NGIConfig("ngi_auth_vars").get("api_services")
+        else:
+            return Configuration().get("keys", {}).get("api_services")
 
     def init_service_instances(self, service_class_mapping: dict) -> dict:
         """

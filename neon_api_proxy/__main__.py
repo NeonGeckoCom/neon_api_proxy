@@ -67,7 +67,9 @@ def run_mq_handler():
     """
     config_data = get_proxy_config()
     proxy = NeonAPIProxyController(config_data)
-    connector = NeonAPIMQConnector(config=None, service_name='neon_api_connector', proxy=proxy)
+    connector = NeonAPIMQConnector(config=None,
+                                   service_name='neon_api_connector',
+                                   proxy=proxy)
     connector.run()
     wait_for_exit_signal()
 
