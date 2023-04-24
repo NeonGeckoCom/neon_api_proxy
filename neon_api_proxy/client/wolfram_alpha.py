@@ -28,9 +28,9 @@
 
 from enum import Enum
 from typing import Union
-from neon_utils.net_utils import get_ip_address
-from neon_utils.log_utils import LOG
+from ovos_utils.log import LOG
 from neon_api_proxy.client import NeonAPI, request_api
+from neon_utils.net_utils import get_ip_address
 
 
 class QueryApi(Enum):

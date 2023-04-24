@@ -29,7 +29,7 @@
 import json
 
 from json import JSONDecodeError
-from neon_utils.logger import LOG
+from ovos_utils.log import LOG
 from neon_api_proxy.client import NeonAPI, request_api
 
 

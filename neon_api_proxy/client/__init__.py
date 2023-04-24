@@ -28,8 +28,8 @@
 
 from typing import Optional
 from enum import Enum
-from neon_utils.logger import LOG
-from neon_utils.mq_utils import send_mq_request
+from ovos_utils.log import LOG
+from neon_mq_connector.utils.client_utils import send_mq_request
 
 from neon_api_proxy.controller import NeonAPIProxyController
 

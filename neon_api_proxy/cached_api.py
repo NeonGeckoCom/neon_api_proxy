@@ -36,11 +36,14 @@ from requests.adapters import HTTPAdapter
 class CachedAPI:
     def __init__(self, cache_name):
         # TODO: Setup a database for this
-        self.session = CachedSession(backend='memory', cache_name=cache_name, expire_after=-1)
+        self.session = CachedSession(backend='memory', cache_name=cache_name,
+                                     expire_after=-1)
         self.session.mount('http://', HTTPAdapter(max_retries=3))
         self.session.mount('https://', HTTPAdapter(max_retries=3))
 
-    def get_with_cache_timeout(self, url: str, timeout: ExpirationTime = -1) -> Union[Response, CachedResponse]:
+    def get_with_cache_timeout(self, url: str,
+                               timeout: ExpirationTime = -1) -> \
+            Union[Response, CachedResponse]:
         """
         Make a request with a specified time to cache the response
         :param url: URL to request
@@ -49,7 +52,8 @@ class CachedAPI:
         """
         if timeout == 0:
             return self.get_bypass_cache(url)
-        return self.session.request("get", url, expire_after=timeout, timeout=10)
+        return self.session.request("get", url, expire_after=timeout,
+                                    timeout=10)
         # with self.session.request_expire_after(timeout):
         #     return self.session.get(url)
 

@@ -27,12 +27,10 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import socketserver
-import json
-import base64
 
-from neon_utils import LOG
-from neon_utils.socket_utils import *
-from neon_api_proxy.controller import NeonAPIProxyController
+from ovos_utils.log import LOG
+from neon_mq_connector.utils.network_utils import b64_to_dict, dict_to_b64
+from neon_utils.socket_utils import get_packet_data
 
 
 class NeonAPITCPHandler(socketserver.BaseRequestHandler):
@@ -40,7 +38,8 @@ class NeonAPITCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         received_message = get_packet_data(self.request)
         received_message_decoded = b64_to_dict(received_message)
-        LOG.debug(f"Received request from '{self.client_address[0]}' : {received_message_decoded}")
+        LOG.debug(f"Received request from '{self.client_address[0]}' : "
+                  f"{received_message_decoded}")
         response = self.server.controller.resolve_query(received_message_decoded)
         LOG.debug(f'Received response from controller: {response}')
         encoded_response = dict_to_b64(response)

@@ -29,7 +29,6 @@
 import os
 import sys
 import unittest
-import socket
 from multiprocessing import Process
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))

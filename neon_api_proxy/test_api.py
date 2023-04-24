@@ -27,6 +27,6 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from neon_api_proxy.services.test_api import *
-from neon_utils.logger import LOG
+from ovos_utils.log import LOG
 LOG.warning("This reference is deprecated, import from neon_api_proxy.services")
 # TODO: Deprecate in v1.0.0

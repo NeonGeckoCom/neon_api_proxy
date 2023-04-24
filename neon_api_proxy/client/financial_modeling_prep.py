@@ -26,10 +26,6 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# import json
-#
-# from neon_api_proxy.client import NeonAPI, request_api
-
 
 def search_stock_by_name(company: str, **kwargs) -> list:
     """

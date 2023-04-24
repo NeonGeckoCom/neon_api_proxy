@@ -30,7 +30,6 @@ import urllib.parse
 
 from enum import Enum
 from neon_api_proxy.cached_api import CachedAPI
-# from neon_utils.log_utils import LOG
 from neon_utils.authentication_utils import find_neon_alpha_vantage_key
 
 
