@@ -23,11 +23,29 @@ Responses will be returned as dictionaries. Responses should contain the followi
 - `encoding` = Usually contains the HTTP content encoding if content is the byte representation of a string, may be `None`
 
 ## Docker Configuration
-When running this as a docker container, the path to configuration files should be mounted to `/config`. This container 
-expects `mq_config.json` to contain service `neon_api_connector` and `ngi_auth_vars.yml` to contain dict `api_services`.
+When running this as a docker container, the `XDG_CONFIG_HOME` envvar is set to `/config`.
+A configuration file at `/config/neon/diana.yaml` is required and should look like:
+```yaml
+MQ:
+  port: <MQ Port>
+  server: <MQ Hostname or IP>
+  users:
+    neon_api_connector:
+      password: <neon_api user's password>
+      user: neon_api
+keys:
+  api_services:
+    alpha_vantage:
+      api_key: <Alpha Vantage Key>
+    open_weather_map:
+      api_key: <OWM Key>
+    wolfram_alpha:
+      api_key: <Wolfram|Alpha Key>
+```
 
 For example, if your configuration resides in `~/.config`:
 ```shell
 export CONFIG_PATH="/home/${USER}/.config"
 docker run -v ${CONFIG_PATH}:/config neon_api_proxy
 ```
+> Note: If connecting to a local MQ server, you may need to specify `--network host`

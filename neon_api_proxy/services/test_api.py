@@ -30,17 +30,14 @@ from neon_api_proxy.cached_api import CachedAPI
 
 
 class TestAPI(CachedAPI):
-    """
-    API for querying Wolfram|Alpha.
-    """
-
     def __init__(self, api_key: str = None):
         super().__init__("Test")
 
     def handle_query(self, **kwargs) -> dict:
         """
         Handles an incoming query and provides a response
-        :return: dict containing `status_code`, `content`, `encoding` from URL response
+        :return: dict containing `status_code`, `content`, `encoding`
+            from URL response
         """
         return {"status_code": 200,
                 "content": "Success",

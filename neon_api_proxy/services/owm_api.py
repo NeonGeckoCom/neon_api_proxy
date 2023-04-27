@@ -52,7 +52,8 @@ class OpenWeatherAPI(CachedAPI):
           'lng' - str longitude
           'units' - optional string "metric" or "imperial"
           'base_url' - base URL to target
-        :return: dict containing `status_code`, `content`, `encoding` from URL response
+        :return: dict containing `status_code`, `content`, `encoding`
+            from URL response
         """
         lat = kwargs.get("lat")
         lng = kwargs.get("lng", kwargs.get("lon"))

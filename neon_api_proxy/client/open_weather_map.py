@@ -47,7 +47,7 @@ def get_current_weather(lat: Union[str, float], lng: Union[str, float],
     Queries Open Weather Map for current weather at the specified location
     :param lat: latitude
     :param lng: longitude
-    :param units: Temperature and Speed units "metric", "imperial", or "standard"
+    :param units: Units of measure "metric", "imperial", or "standard"
     :param kwargs:
       'api_key' - optional str api_key to use for query
       'language' - optional language param (default english)
@@ -68,11 +68,12 @@ def get_forecast(lat: Union[str, float], lng: Union[str, float],
     Queries Open Weather Map for weather data at the specified location
     :param lat: latitude
     :param lng: longitude
-    :param units: Temperature and Speed units "metric", "imperial", or "standard"
+    :param units: Units of measure "metric", "imperial", or "standard"
     :param kwargs:
       'api_key' - optional str api_key to use for query
       'language' - optional language param (default english)
-    :return: dict weather data (https://openweathermap.org/api/one-call-api#hist_example)
+    :return: dict weather data
+        (https://openweathermap.org/api/one-call-api#hist_example)
     """
     return _make_api_call(lat, lng, units, OpenWeatherMapApi.ONECALL, **kwargs)
 
