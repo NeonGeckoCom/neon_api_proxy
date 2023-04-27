@@ -3,4 +3,4 @@ requests~=2.20
 neon_utils[network]~=1.0
 ovos-utils~=0.0.31
 ovos-config~=0.0.7
-neon-mq-connector~=0.3,>=0.6.1a8
+neon-mq-connector~=0.6,>=0.6.1a8
