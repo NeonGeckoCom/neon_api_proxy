@@ -89,7 +89,8 @@ class WolframAPI(CachedAPI):
             raise ValueError(f"No query in request: {kwargs}")
         query_params = dict()
         query_params['i'] = kwargs.get("query")
-        query_params['units'] = kwargs.get("units") if kwargs.get("units") == "metric" else "nonmetric"
+        query_params['units'] = kwargs.get("units") if \
+            kwargs.get("units") == "metric" else "nonmetric"
         lat = kwargs.get("lat")
         lng = kwargs.get("lng")
         if kwargs.get("latlong"):
@@ -108,12 +109,14 @@ class WolframAPI(CachedAPI):
         Handles an incoming query and provides a response
         :param kwargs:
           'query' - string query to ask Wolfram|Alpha
-          'api' - string api to query (simple, short, spoken, full, recognize, conversation)
+          'api' - string api to query
+                (simple, short, spoken, full, recognize, conversation)
           'units' - optional string "metric" or "nonmetric"
           'latlong' - optional string lat/lng
           'lat'+'lng' - optional float or string lat/lng (separate keys)
           'ip' - optional string origin IP Address for geolocation
-        :return: dict containing `status_code`, `content`, `encoding` from URL response
+        :return: dict containing `status_code`, `content`, `encoding`
+            from URL response
         """
         api = kwargs.get("api")
         if not api:
@@ -145,9 +148,11 @@ class WolframAPI(CachedAPI):
 
     def _query_api(self, query: str) -> dict:
         """
-        Queries the Wolfram|Alpha API and returns a dict with the status, content, and encoding
+        Queries the Wolfram|Alpha API and returns a dict with:
+            status, content, and encoding
         :param query: URL to query
-        :return: dict response containing: `status_code`, `content`, and `encoding`
+        :return: dict response containing:
+            `status_code`, `content`, and `encoding`
         """
         result = self.get_with_cache_timeout(query)
         if not result.ok:

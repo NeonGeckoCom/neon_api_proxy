@@ -73,7 +73,7 @@ class NeonAPIMQConnector(MQConnector):
 
                 message_id = tokens.pop('message_id', request.get("message_id",
                                                                   None))
-                LOG.info(f"request={request}; message_id={message_id}")
+                LOG.info(f"request={request}")
 
                 respond = self.proxy.resolve_query(request)
                 LOG.info(f"message={message_id} "

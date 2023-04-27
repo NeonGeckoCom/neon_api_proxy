@@ -36,6 +36,7 @@ from neon_utils.net_utils import get_ip_address
 class QueryApi(Enum):
     def __repr__(self):
         return self.value
+
     SIMPLE = "simple"
     SHORT = "short"
     SPOKEN = "spoken"
@@ -44,9 +45,12 @@ class QueryApi(Enum):
     CONVERSATION = "conversation"
 
 
-def get_wolfram_alpha_response(query: str, api: QueryApi, units: str = "metric", **kwargs) -> Union[str, bytes]:
+def get_wolfram_alpha_response(query: str, api: QueryApi,
+                               units: str = "metric",
+                               **kwargs) -> Union[str, bytes]:
     """
-    Queries Wolfram|Alpha for a response from the specified API with the specified parameters
+    Queries Wolfram|Alpha for a response from the specified API with the
+        specified parameters
     :param query: Question to submit to Wolfram|Alpha
     :param api: API to target
     :param units: "metric" or "nonmetric" units
@@ -90,12 +94,15 @@ def api_to_url(api: QueryApi) -> str:
         raise ValueError("api is null")
     if not isinstance(api, QueryApi):
         raise TypeError(f"Not a QueryApi: {api}")
-    url_map = {QueryApi.SIMPLE: "http://api.wolframalpha.com/v2/simple",
-               QueryApi.SHORT: "http://api.wolframalpha.com/v2/result",
-               QueryApi.SPOKEN: "http://api.wolframalpha.com/v2/spoken",
-               QueryApi.FULL: "http://api.wolframalpha.com/v2/query",
-               QueryApi.RECOGNIZE: "http://www.wolframalpha.com/queryrecognizer/query.jsp",
-               QueryApi.CONVERSATION: "http://api.wolframalpha.com/v1/conversation.jsp"}
+    url_map = {
+        QueryApi.SIMPLE: "http://api.wolframalpha.com/v2/simple",
+        QueryApi.SHORT: "http://api.wolframalpha.com/v2/result",
+        QueryApi.SPOKEN: "http://api.wolframalpha.com/v2/spoken",
+        QueryApi.FULL: "http://api.wolframalpha.com/v2/query",
+        QueryApi.RECOGNIZE: "http://www.wolframalpha.com/queryrecognizer/"
+                            "query.jsp",
+        QueryApi.CONVERSATION: "http://api.wolframalpha.com/v1/"
+                               "conversation.jsp"}
     return url_map[api]
 
 

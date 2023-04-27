@@ -30,7 +30,6 @@ import json
 
 from os import environ, path
 from ovos_utils.log import LOG
-# TODO: Consider moving this to neon_utils package
 
 
 def get_proxy_config() -> dict:
@@ -47,7 +46,7 @@ def get_proxy_config() -> dict:
     for p in valid_config_paths:
         if p and path.isfile(p):
             valid_config_path = p
-            LOG.warning(f"Deprecated configuraiton file found at: {p}")
+            LOG.warning(f"Deprecated configuration file found at: {p}")
             break
     if not valid_config_path:
         return dict()

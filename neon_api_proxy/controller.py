@@ -39,7 +39,7 @@ from neon_api_proxy.services.test_api import TestAPI
 
 class NeonAPIProxyController:
     """
-        Generic module for binding between service name and actual service for fulfilling request
+    Resolves a service name to an instance to provide external API access
     """
 
     # Mapping between string service name and actual class
@@ -60,42 +60,51 @@ class NeonAPIProxyController:
 
     @staticmethod
     def _init_config() -> dict:
-        init_config_dir()
+        from neon_api_proxy.config import get_proxy_config
+        legacy_config = get_proxy_config()
+        if legacy_config:
+            return legacy_config
         legacy_config_file = join(get_config_dir(), "ngi_auth_vars.yml")
         if isfile(legacy_config_file):
             LOG.warning(f"Legacy configuration found at: {legacy_config_file}")
-            return NGIConfig("ngi_auth_vars").get("api_services")
+            return NGIConfig("ngi_auth_vars").get("api_services", {})
         else:
-            return Configuration().get("keys", {}).get("api_services")
+            return Configuration().get("keys", {}).get("api_services", {})
 
     def init_service_instances(self, service_class_mapping: dict) -> dict:
         """
-            Maps service classes to their instances
-            @param service_class_mapping: dictionary containing mapping between service string name
-                    and python class representing it
+        Maps service classes to their instances
+        @param service_class_mapping: dictionary containing mapping between
+            service string name and python class representing it
 
-            @return dictionary containing mapping between service string name
-                    and instance of python class representing it
+        @return dictionary containing mapping between service string name
+                and instance of python class representing it
         """
         service_mapping = dict()
         for item in list(service_class_mapping):
-            api_key = self.config.get("SERVICES", self.config).get(item, {}).get("api_key") if self.config else None
+            api_key = self.config.get("SERVICES",
+                                      self.config).get(item,
+                                                       {}).get("api_key") \
+                if self.config else None
             try:
-                service_mapping[item] = service_class_mapping[item](api_key=api_key)
+                service_mapping[item] = \
+                    service_class_mapping[item](api_key=api_key)
             except Exception as e:
                 LOG.error(e)
         return service_mapping
 
     def resolve_query(self, query: dict) -> dict:
         """
-            Generically resolves input query dictionary by mapping its "service" parameter
-            @param query: dictionary with query parameters
-            @return: response from the destination service
+        Generically resolves input query dictionary by mapping its "service"
+        @param query: dictionary with query parameters
+        @return: response from the destination service
         """
         target_service = query.get('service')
         message_id = query.pop('message_id', None)
-        if target_service and target_service in list(self.service_instance_mapping):
-            resp = self.service_instance_mapping[target_service].handle_query(**query)
+        if target_service and target_service in \
+                list(self.service_instance_mapping):
+            resp = self.service_instance_mapping[target_service].\
+                handle_query(**query)
         else:
             resp = {
                 "status_code": 401,

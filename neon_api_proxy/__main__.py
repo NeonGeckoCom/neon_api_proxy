@@ -26,47 +26,17 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import argparse
-import socketserver
-
 from ovos_utils import wait_for_exit_signal
 
 from neon_api_proxy.api_connector import NeonAPIMQConnector
-from neon_api_proxy.config import get_proxy_config
 from neon_api_proxy.controller import NeonAPIProxyController
-from neon_api_proxy.socket_handler import NeonAPITCPHandler
-
-
-def run_tcp_handler(config_data: dict = None):
-    """
-        Runs threaded TCP socket on specified address and port
-        @param config_data: dict with configuration data for the ProxyController
-    """
-    parser = argparse.ArgumentParser(description='Parameters for TCP socket server')
-
-    parser.add_argument('--host',
-                        type=str,
-                        default='127.0.0.1',
-                        help='Socket host (defaults to 127.0.0.1)')
-    parser.add_argument('--port',
-                        type=int,
-                        default=8555,
-                        help='Socket port (defaults to 8555)')
-    args = parser.parse_args()
-
-    host, port = args.host, args.port
-
-    with socketserver.ThreadingTCPServer((host, port), NeonAPITCPHandler) as server:
-        server.controller = NeonAPIProxyController(config=config_data)
-        server.serve_forever()
 
 
 def run_mq_handler():
     """
     Start the ProxyController and MQConnector services
     """
-    config_data = get_proxy_config()
-    proxy = NeonAPIProxyController(config_data)
+    proxy = NeonAPIProxyController()
     connector = NeonAPIMQConnector(config=None,
                                    service_name='neon_api_connector',
                                    proxy=proxy)

@@ -36,8 +36,10 @@ from neon_utils.authentication_utils import find_neon_alpha_vantage_key
 class QueryUrl(Enum):
     def __str__(self):
         return self.value
-    SYMBOL = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH"  # keywords=, apikey=
-    QUOTE = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE"  # symbol=, apikey=
+    SYMBOL = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH"
+    # keywords=, apikey=
+    QUOTE = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE"
+    # symbol=, apikey=
 
 
 class AlphaVantageAPI(CachedAPI):
