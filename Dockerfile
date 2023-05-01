@@ -8,7 +8,6 @@ RUN apt-get update && \
     gcc \
     python3  \
     python3-dev  \
-    git \
     && pip install wheel
 
 ADD . /neon_api_proxy
