@@ -1,9 +1,10 @@
-log_level: Info
+log_level: INFO
 logs:
   level_overrides:
     error:
       - pika
-    warning: []
+    warning:
+      - filelock
     info: []
     debug: []
 MQ:

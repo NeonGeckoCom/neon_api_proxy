@@ -27,9 +27,12 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from ovos_utils import wait_for_exit_signal
+from ovos_utils.log import init_service_logger
 
 from neon_api_proxy.api_connector import NeonAPIMQConnector
 from neon_api_proxy.controller import NeonAPIProxyController
+
+init_service_logger("neon-api-proxy")
 
 
 def run_mq_handler():
