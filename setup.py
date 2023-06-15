@@ -64,6 +64,8 @@ setup(
     name='neon-api-proxy',
     version=version,
     description='Neon Proxy for external API Calls',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/NeonGeckoCom/neon_api_proxy',
     author='Neongecko',
     author_email='developers@neon.ai',
