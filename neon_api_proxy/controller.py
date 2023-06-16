@@ -29,8 +29,8 @@
 from os.path import join, isfile
 from ovos_utils.log import LOG
 from ovos_config.config import Configuration
-from neon_utils.configuration_utils import NGIConfig, init_config_dir, \
-    get_config_dir
+from neon_utils.configuration_utils import NGIConfig
+from ovos_config.locations import get_xdg_config_save_path
 from neon_api_proxy.services.owm_api import OpenWeatherAPI
 from neon_api_proxy.services.alpha_vantage_api import AlphaVantageAPI
 from neon_api_proxy.services.wolfram_api import WolframAPI
@@ -64,7 +64,8 @@ class NeonAPIProxyController:
         legacy_config = get_proxy_config()
         if legacy_config:
             return legacy_config
-        legacy_config_file = join(get_config_dir(), "ngi_auth_vars.yml")
+        legacy_config_file = join(get_xdg_config_save_path(),
+                                  "ngi_auth_vars.yml")
         if isfile(legacy_config_file):
             LOG.warning(f"Legacy configuration found at: {legacy_config_file}")
             return NGIConfig("ngi_auth_vars").get("api_services", {})
@@ -90,7 +91,7 @@ class NeonAPIProxyController:
                 service_mapping[item] = \
                     service_class_mapping[item](api_key=api_key)
             except Exception as e:
-                LOG.error(e)
+                LOG.info(e)
         return service_mapping
 
     def resolve_query(self, query: dict) -> dict:
