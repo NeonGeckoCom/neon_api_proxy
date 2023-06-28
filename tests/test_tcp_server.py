@@ -30,7 +30,8 @@ import os
 import unittest
 import socket
 
-from neon_utils.socket_utils import b64_to_dict, dict_to_b64, get_packet_data
+from neon_mq_connector.utils.network_utils import b64_to_dict, dict_to_b64
+from neon_utils.socket_utils import get_packet_data
 
 VALID_WOLFRAM_QUERY = {
     "service": "wolfram_alpha",

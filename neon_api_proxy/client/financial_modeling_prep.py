@@ -26,10 +26,6 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# import json
-#
-# from neon_api_proxy.client import NeonAPI, request_api
-
 
 def search_stock_by_name(company: str, **kwargs) -> list:
     """
@@ -41,7 +37,8 @@ def search_stock_by_name(company: str, **kwargs) -> list:
     :return: list of dict matched stock data (`name`, `symbol`)
     """
     raise NotImplementedError("API Not implemented")
-    # resp = query_fmp_api(f"https://financialmodelingprep.com/api/v3/search?{urllib.parse.urlencode(query_params)}")
+    # resp = query_fmp_api(f"https://financialmodelingprep.com/api/v3/search?
+    # {urllib.parse.urlencode(query_params)}")
     # query_params = {**kwargs, **{"api": "symbol",
     #                              "query": company,
     #                              "limit": 10}}
@@ -59,7 +56,8 @@ def get_stock_quote(symbol: str, **kwargs) -> dict:
     :return: dict stock data
     """
     raise NotImplementedError("API Not implemented")
-    # resp = query_fmp_api(f"https://financialmodelingprep.com/api/v3/company/profile/{symbol}?"
+    # resp = query_fmp_api(f"https://financialmodelingprep.com/api/v3/
+    # company/profile/{symbol}?"
     #                      f"{urllib.parse.urlencode(query_params)}")
     # query_params = {**kwargs, **{"api": "quote",
     #                              "symbol": symbol}}

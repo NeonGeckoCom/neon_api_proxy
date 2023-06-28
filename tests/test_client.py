@@ -32,7 +32,7 @@ import unittest
 import pytest
 
 from mock.mock import Mock
-from neon_utils.logger import LOG
+from ovos_utils.log import LOG
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 

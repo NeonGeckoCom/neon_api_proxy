@@ -109,6 +109,7 @@ class TestWolframAPI(unittest.TestCase):
         self.assertIsInstance(result, dict)
         self.assertIsInstance(result["content"].decode(result["encoding"]), str)
 
+    @unittest.skip("Wolfram API occasionally response with an error")
     def test_query_simple_api(self):
         result = self.api._query_api(SIMPLE_QUERY)
         self.assertIsInstance(result, dict)

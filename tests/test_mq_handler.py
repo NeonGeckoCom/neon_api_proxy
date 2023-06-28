@@ -29,7 +29,6 @@
 import os
 import sys
 import unittest
-import socket
 from multiprocessing import Process
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -56,8 +55,8 @@ class TestMQHandler(unittest.TestCase):
         cls.mq_service.terminate()
 
     def test_valid_wolfram_query(self):
-        from neon_utils.service_apis import request_neon_api, NeonAPI
-        resp = request_neon_api(NeonAPI.WOLFRAM_ALPHA, VALID_WOLFRAM_QUERY)
+        from neon_api_proxy.client import request_api, NeonAPI
+        resp = request_api(NeonAPI.WOLFRAM_ALPHA, VALID_WOLFRAM_QUERY)
         self.assertIsInstance(resp, dict)
         self.assertNotEqual(resp["status_code"], 401)
 

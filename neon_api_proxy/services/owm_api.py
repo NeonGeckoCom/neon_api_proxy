@@ -27,10 +27,12 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import urllib.parse
+from datetime import timedelta
+
 from requests import Response
 
 from neon_api_proxy.cached_api import CachedAPI
-from neon_utils.logger import LOG
+from ovos_utils.log import LOG
 from neon_utils.authentication_utils import find_neon_owm_key
 
 
@@ -42,7 +44,7 @@ class OpenWeatherAPI(CachedAPI):
     def __init__(self, api_key: str = None, cache_seconds=180):
         super().__init__("open_weather_map")
         self._api_key = api_key or find_neon_owm_key()
-        self.cache_timeout = cache_seconds
+        self.cache_timeout = timedelta(seconds=cache_seconds)
 
     def handle_query(self, **kwargs) -> dict:
         """
@@ -52,7 +54,8 @@ class OpenWeatherAPI(CachedAPI):
           'lng' - str longitude
           'units' - optional string "metric" or "imperial"
           'base_url' - base URL to target
-        :return: dict containing `status_code`, `content`, `encoding` from URL response
+        :return: dict containing `status_code`, `content`, `encoding`
+            from URL response
         """
         lat = kwargs.get("lat")
         lng = kwargs.get("lng", kwargs.get("lon"))

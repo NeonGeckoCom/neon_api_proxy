@@ -29,8 +29,8 @@
 import pika.channel
 
 from typing import Optional
-from neon_utils import LOG
-from neon_utils.socket_utils import b64_to_dict, dict_to_b64
+from ovos_utils.log import LOG
+from neon_mq_connector.utils.network_utils import b64_to_dict, dict_to_b64
 from neon_mq_connector.connector import MQConnector
 
 from neon_api_proxy.controller import NeonAPIProxyController
@@ -39,7 +39,8 @@ from neon_api_proxy.controller import NeonAPIProxyController
 class NeonAPIMQConnector(MQConnector):
     """Adapter for establishing connection between Neon API and MQ broker"""
 
-    def __init__(self, config: Optional[dict], service_name: str, proxy: NeonAPIProxyController):
+    def __init__(self, config: Optional[dict], service_name: str,
+                 proxy: NeonAPIProxyController):
         """
             Additionally accepts message bus connection properties
 
@@ -70,14 +71,17 @@ class NeonAPIMQConnector(MQConnector):
                 request = b64_to_dict(body)
                 tokens = self.extract_agent_tokens(request)
 
-                message_id = tokens.pop('message_id', request.get("message_id", None))
-                LOG.info(f"request={request}; message_id={message_id}")
+                message_id = tokens.pop('message_id', request.get("message_id",
+                                                                  None))
+                LOG.info(f"request={request}")
 
                 respond = self.proxy.resolve_query(request)
-                LOG.info(f"message={message_id} status={respond.get('status_code')}")
+                LOG.info(f"message={message_id} "
+                         f"status={respond.get('status_code')}")
 
                 try:
-                    respond['content'] = bytes(respond.get('content', b'')).decode(encoding='utf-8')
+                    respond['content'] = bytes(respond.get('content', b'')).\
+                        decode(encoding='utf-8')
                 except Exception as e:
                     LOG.error(e)
                 respond = {**respond, **tokens}
@@ -87,14 +91,16 @@ class NeonAPIMQConnector(MQConnector):
                 routing_key = request.get('routing_key', 'neon_api_output')
                 # queue declare is idempotent, just making sure queue exists
                 channel.queue_declare(queue=routing_key)
-                channel.basic_publish(exchange='',
-                                      routing_key=routing_key,
-                                      body=data,
-                                      properties=pika.BasicProperties(expiration='1000')
-                                      )
+                channel.basic_publish(
+                    exchange='',
+                    routing_key=routing_key,
+                    body=data,
+                    properties=pika.BasicProperties(expiration='1000')
+                )
                 channel.basic_ack(method.delivery_tag)
             else:
-                raise TypeError(f'Invalid body received, expected: bytes string; got: {type(body)}')
+                raise TypeError(f'Invalid body received, expected bytes string;'
+                                f' got: {type(body)}')
         except Exception as e:
             LOG.error(f"message_id={message_id}")
             LOG.error(e)
@@ -112,7 +118,8 @@ class NeonAPIMQConnector(MQConnector):
         if 'klatchat' in request_agent:
             LOG.info('Resolved agent is "klatchat"')
             tokens['cid'] = msg_data.pop("cid", None)
-            tokens['message_id'] = tokens['replied_message'] = msg_data.get('messageID', None)
+            tokens['message_id'] = tokens['replied_message'] = \
+                msg_data.get('messageID', None)
         else:
             LOG.warning('Failed to resolve an agent from the message data')
         return tokens
@@ -124,7 +131,9 @@ class NeonAPIMQConnector(MQConnector):
         self.run()
 
     def pre_run(self, **kwargs):
-        self.register_consumer("neon_api_consumer", self.vhost, 'neon_api_input', self.handle_api_input, auto_ack=False)
+        self.register_consumer("neon_api_consumer", self.vhost,
+                               'neon_api_input', self.handle_api_input,
+                               auto_ack=False)
         self.register_consumer("neon_api_consumer_targeted",
                                self.vhost,
                                f'neon_api_input_{self.service_id}',

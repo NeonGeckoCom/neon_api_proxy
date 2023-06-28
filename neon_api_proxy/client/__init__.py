@@ -28,8 +28,8 @@
 
 from typing import Optional
 from enum import Enum
-from neon_utils.logger import LOG
-from neon_utils.mq_utils import send_mq_request
+from ovos_utils.log import LOG
+from neon_mq_connector.utils.client_utils import send_mq_request
 
 from neon_api_proxy.controller import NeonAPIProxyController
 
@@ -52,7 +52,8 @@ class NeonAPIProxyClient(NeonAPIProxyController):
 
     def resolve_query(self, query: dict, timeout: int = 30) -> dict:
         target_service = query.get('service')
-        if target_service and target_service in list(self.service_instance_mapping):
+        if target_service and target_service in \
+                list(self.service_instance_mapping):
             LOG.debug(f"Handling API request locally")
             return super().resolve_query(query)
         LOG.debug(f"Forwarding API request to remote")
@@ -62,10 +63,11 @@ class NeonAPIProxyClient(NeonAPIProxyController):
     def _request_mq_api(query_params: dict,
                         timeout: int = 30) -> dict:
         """
-            Handle a request for information from the Neon API Proxy Server
-            @param query_params: Data parameters to pass to remote API
-            @param timeout: Request timeout in seconds
-            @return: dict response from API with: `status_code`, `content`, and `encoding`
+        Handle a request for information from the Neon API Proxy Server
+        @param query_params: Data parameters to pass to remote API
+        @param timeout: Request timeout in seconds
+        @return: dict response from API with:
+            `status_code`, `content`, and `encoding`
         """
 
         if not query_params:
@@ -73,9 +75,11 @@ class NeonAPIProxyClient(NeonAPIProxyController):
         if not isinstance(query_params, dict):
             raise TypeError(f"Expected dict, got: {query_params}")
 
-        response = send_mq_request("/neon_api", query_params, "neon_api_input", "neon_api_output", timeout)
+        response = send_mq_request("/neon_api", query_params,
+                                   "neon_api_input", "neon_api_output", timeout)
         return response or {"status_code": 401,
-                            "content": f"Neon API failed to give a response within {timeout} seconds",
+                            "content": f"Neon API failed to give a response "
+                                       f"within {timeout} seconds",
                             "encoding": None}
 
 
@@ -97,7 +101,8 @@ def request_api(api: NeonAPI, query_params: dict, timeout: int = 30) -> dict:
     :param api: Service API to target
     :param query_params: Data parameters to pass to service API
     :param timeout: Request timeout in seconds
-    :return: dict response from API with: `status_code`, `content`, and `encoding`
+    :return: dict response from API with:
+    `status_code`, `content`, and `encoding`
     """
 
     if not isinstance(api, NeonAPI):

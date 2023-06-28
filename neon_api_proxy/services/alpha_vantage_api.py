@@ -27,18 +27,20 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import urllib.parse
+from datetime import timedelta
 
 from enum import Enum
 from neon_api_proxy.cached_api import CachedAPI
-# from neon_utils.log_utils import LOG
 from neon_utils.authentication_utils import find_neon_alpha_vantage_key
 
 
 class QueryUrl(Enum):
     def __str__(self):
         return self.value
-    SYMBOL = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH"  # keywords=, apikey=
-    QUOTE = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE"  # symbol=, apikey=
+    SYMBOL = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH"
+    # keywords=, apikey=
+    QUOTE = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE"
+    # symbol=, apikey=
 
 
 class AlphaVantageAPI(CachedAPI):
@@ -49,6 +51,7 @@ class AlphaVantageAPI(CachedAPI):
     def __init__(self, api_key: str = None):
         super().__init__("alpha_vantage")
         self._api_key = api_key or find_neon_alpha_vantage_key()
+        self.quote_timeout = timedelta(minutes=5)
 
     def _search_symbol(self, query: str) -> dict:
         if not query:
@@ -71,7 +74,8 @@ class AlphaVantageAPI(CachedAPI):
         query_params = {"symbol": symbol,
                         "apikey": self._api_key}
         query_str = urllib.parse.urlencode(query_params)
-        resp = self.get_with_cache_timeout(f"{QueryUrl.QUOTE}&{query_str}", 180)
+        resp = self.get_with_cache_timeout(f"{QueryUrl.QUOTE}&{query_str}",
+                                           self.quote_timeout)
         return {"status_code": resp.status_code,
                 "content": resp.content,
                 "encoding": resp.encoding}

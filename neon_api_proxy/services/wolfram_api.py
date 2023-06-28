@@ -27,9 +27,10 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import urllib.parse
+from datetime import timedelta
 
 from enum import Enum
-from neon_utils.log_utils import LOG
+from ovos_utils.log import LOG
 from neon_utils.authentication_utils import find_neon_wolfram_key
 from neon_api_proxy.cached_api import CachedAPI
 
@@ -54,6 +55,7 @@ class WolframAPI(CachedAPI):
         super().__init__("wolfram")
         self._api_key = api_key or find_neon_wolfram_key()
         self.session.allowable_codes = (200, 501)
+        self.cache_time = timedelta(minutes=60)
 
     def _build_query_url(self, query_type: QueryUrl, query_arg: str) -> str:
         """
@@ -89,7 +91,8 @@ class WolframAPI(CachedAPI):
             raise ValueError(f"No query in request: {kwargs}")
         query_params = dict()
         query_params['i'] = kwargs.get("query")
-        query_params['units'] = kwargs.get("units") if kwargs.get("units") == "metric" else "nonmetric"
+        query_params['units'] = kwargs.get("units") if \
+            kwargs.get("units") == "metric" else "nonmetric"
         lat = kwargs.get("lat")
         lng = kwargs.get("lng")
         if kwargs.get("latlong"):
@@ -108,12 +111,14 @@ class WolframAPI(CachedAPI):
         Handles an incoming query and provides a response
         :param kwargs:
           'query' - string query to ask Wolfram|Alpha
-          'api' - string api to query (simple, short, spoken, full, recognize, conversation)
+          'api' - string api to query
+                (simple, short, spoken, full, recognize, conversation)
           'units' - optional string "metric" or "nonmetric"
           'latlong' - optional string lat/lng
           'lat'+'lng' - optional float or string lat/lng (separate keys)
           'ip' - optional string origin IP Address for geolocation
-        :return: dict containing `status_code`, `content`, `encoding` from URL response
+        :return: dict containing `status_code`, `content`, `encoding`
+            from URL response
         """
         api = kwargs.get("api")
         if not api:
@@ -145,11 +150,13 @@ class WolframAPI(CachedAPI):
 
     def _query_api(self, query: str) -> dict:
         """
-        Queries the Wolfram|Alpha API and returns a dict with the status, content, and encoding
+        Queries the Wolfram|Alpha API and returns a dict with:
+            status, content, and encoding
         :param query: URL to query
-        :return: dict response containing: `status_code`, `content`, and `encoding`
+        :return: dict response containing:
+            `status_code`, `content`, and `encoding`
         """
-        result = self.get_with_cache_timeout(query)
+        result = self.get_with_cache_timeout(query, timeout=self.cache_time)
         if not result.ok:
             # 501 = Wolfram couldn't understand
             # 403 = Invalid API Key Provided

@@ -29,7 +29,7 @@
 import json
 
 from json import JSONDecodeError
-from neon_utils.logger import LOG
+from ovos_utils.log import LOG
 from neon_api_proxy.client import NeonAPI, request_api
 
 
@@ -70,7 +70,8 @@ def search_stock_by_name(company: str, **kwargs) -> list:
     if not data.get("bestMatches"):
         LOG.warning(f"No matches found for {company}")
         return []
-    filtered_data = [stock for stock in data.get("bestMatches") if stock.get("4. region") == region]
+    filtered_data = [stock for stock in data.get("bestMatches") if
+                     stock.get("4. region") == region]
     if not filtered_data:
         filtered_data = data.get("bestMatches")
     data = [{"symbol": stock.get("1. symbol"),
