@@ -1,5 +1,10 @@
 FROM python:3.10-slim
 
+LABEL vendor=neon.ai \
+    ai.neon.name="neon-api-proxy"
+
+ENV OVOS_CONFIG_BASE_FOLDER neon
+ENV OVOS_CONFIG_FILENAME neon.yaml
 ENV XDG_CONFIG_HOME /config
 COPY docker_overlay/ /
 
