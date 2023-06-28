@@ -27,6 +27,7 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import urllib.parse
+from datetime import timedelta
 
 from enum import Enum
 from ovos_utils.log import LOG
@@ -54,6 +55,7 @@ class WolframAPI(CachedAPI):
         super().__init__("wolfram")
         self._api_key = api_key or find_neon_wolfram_key()
         self.session.allowable_codes = (200, 501)
+        self.cache_time = timedelta(minutes=60)
 
     def _build_query_url(self, query_type: QueryUrl, query_arg: str) -> str:
         """
@@ -154,7 +156,7 @@ class WolframAPI(CachedAPI):
         :return: dict response containing:
             `status_code`, `content`, and `encoding`
         """
-        result = self.get_with_cache_timeout(query)
+        result = self.get_with_cache_timeout(query, timeout=self.cache_time)
         if not result.ok:
             # 501 = Wolfram couldn't understand
             # 403 = Invalid API Key Provided
