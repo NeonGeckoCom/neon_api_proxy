@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.2a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.2a1) (2023-07-04)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.1a1...0.4.2a1)
+
+**Merged pull requests:**
+
+- Fix unit test automation to run on PR to `master` [\#86](https://github.com/NeonGeckoCom/neon_api_proxy/pull/86) ([NeonDaniel](https://github.com/NeonDaniel))
+
 ## [0.4.1a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.1a1) (2023-07-04)
 
 [Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.0...0.4.1a1)
