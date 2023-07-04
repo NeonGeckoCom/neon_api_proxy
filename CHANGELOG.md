@@ -1,96 +1,20 @@
 # Changelog
 
-## [0.3.4a11](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a11) (2023-06-28)
+## [0.4.2a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.2a1) (2023-07-04)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a10...0.3.4a11)
-
-**Merged pull requests:**
-
-- Fix config filename to use `diana.yaml` instead of `neon.yaml` [\#82](https://github.com/NeonGeckoCom/neon_api_proxy/pull/82) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a10](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a10) (2023-06-28)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a9...0.3.4a10)
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.1a1...0.4.2a1)
 
 **Merged pull requests:**
 
-- Update Docker overlay and config to use config envvars instead of files [\#81](https://github.com/NeonGeckoCom/neon_api_proxy/pull/81) ([NeonDaniel](https://github.com/NeonDaniel))
+- Fix unit test automation to run on PR to `master` [\#86](https://github.com/NeonGeckoCom/neon_api_proxy/pull/86) ([NeonDaniel](https://github.com/NeonDaniel))
 
-## [0.3.4a9](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a9) (2023-06-28)
+## [0.4.1a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.1a1) (2023-07-04)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a8...0.3.4a9)
-
-**Merged pull requests:**
-
-- Update APIs to handle response cache times [\#80](https://github.com/NeonGeckoCom/neon_api_proxy/pull/80) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a8](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a8) (2023-06-16)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a7...0.3.4a8)
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.0...0.4.1a1)
 
 **Merged pull requests:**
 
-- Resolve logged deprecation warning and invalid "error" [\#79](https://github.com/NeonGeckoCom/neon_api_proxy/pull/79) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a7](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a7) (2023-06-15)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a6...0.3.4a7)
-
-**Merged pull requests:**
-
-- Add `long_description` and `long_description_content_type` to setup.py [\#78](https://github.com/NeonGeckoCom/neon_api_proxy/pull/78) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a6](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a6) (2023-06-15)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a5...0.3.4a6)
-
-**Closed issues:**
-
-- Circular dependency neon\_mq\_connector [\#60](https://github.com/NeonGeckoCom/neon_api_proxy/issues/60)
-
-**Merged pull requests:**
-
-- Fix packaging automation [\#77](https://github.com/NeonGeckoCom/neon_api_proxy/pull/77) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a5](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a5) (2023-06-15)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a4...0.3.4a5)
-
-**Merged pull requests:**
-
-- Prep for stable release [\#76](https://github.com/NeonGeckoCom/neon_api_proxy/pull/76) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a4](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a4) (2023-05-01)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a3...0.3.4a4)
-
-**Merged pull requests:**
-
-- Logging updates and cleanup [\#75](https://github.com/NeonGeckoCom/neon_api_proxy/pull/75) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a3](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a3) (2023-04-27)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a2...0.3.4a3)
-
-**Merged pull requests:**
-
-- Update Container Config Handling [\#74](https://github.com/NeonGeckoCom/neon_api_proxy/pull/74) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a2](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a2) (2023-04-24)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.4a1...0.3.4a2)
-
-**Merged pull requests:**
-
-- Update configuration handling [\#73](https://github.com/NeonGeckoCom/neon_api_proxy/pull/73) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.3.4a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.3.4a1) (2023-04-22)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.3.3...0.3.4a1)
-
-**Merged pull requests:**
-
-- Update GitHub Automation [\#72](https://github.com/NeonGeckoCom/neon_api_proxy/pull/72) ([NeonDaniel](https://github.com/NeonDaniel))
+- Add docker publication to release workflow [\#84](https://github.com/NeonGeckoCom/neon_api_proxy/pull/84) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
