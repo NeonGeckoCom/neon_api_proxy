@@ -27,14 +27,14 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import urllib.parse
+
 from datetime import timedelta
 from os import getenv
 from time import time, sleep
-
 from requests import Response
+from ovos_utils.log import LOG
 
 from neon_api_proxy.cached_api import CachedAPI
-from ovos_utils.log import LOG
 
 
 class MapMakerAPI(CachedAPI):
