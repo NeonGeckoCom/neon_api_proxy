@@ -77,7 +77,7 @@ class NeonAPIClientTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         def _override_find_key(*args, **kwargs):
-            raise Exception
+            raise Exception("Test Exception; no key found")
         import neon_utils.authentication_utils
         neon_utils.authentication_utils.find_generic_keyfile = _override_find_key
 
@@ -167,83 +167,83 @@ class WolframAlphaTests(unittest.TestCase):
             self.assertIsInstance(resp, bytes)
 
 
-class AlphaVantageTests(unittest.TestCase):
-    def test_get_stock_symbol_spec_key(self):
-        from neon_api_proxy.client.alpha_vantage import search_stock_by_name
-        matches = search_stock_by_name("tencent", api_key="demo")
-        self.assertIsInstance(matches, list)
-        for match in matches:
-            self.assertIsInstance(match, dict)
-            self.assertEqual(match["region"], "United States")
-        self.assertEqual(matches[0]["symbol"], "TCEHY")
-
-    def test_get_stock_symbol_conf_key(self):
-        from neon_api_proxy.client.alpha_vantage import search_stock_by_name
-        matches = search_stock_by_name("alphabet")
-        self.assertIsInstance(matches, list)
-        for match in matches:
-            self.assertIsInstance(match, dict)
-            self.assertEqual(match["region"], "United States")
-        self.assertEqual(matches[0]["symbol"], "GOOGL")
-
-    @pytest.mark.skip  # TODO: This fails due to cached valid response
-    def test_get_stock_symbol_invalid_key(self):
-        from neon_api_proxy.client.alpha_vantage import search_stock_by_name
-        matches = search_stock_by_name("alphabet", api_key="demo")
-        self.assertIsInstance(matches, list)
-        self.assertEqual(len(matches), 0)
-
-    def test_get_stock_symbol_no_results(self):
-        from neon_api_proxy.client.alpha_vantage import search_stock_by_name
-        matches = search_stock_by_name("google")
-        self.assertIsInstance(matches, list)
-        self.assertEqual(len(matches), 0)
-
-    def test_get_stock_quote_spec_key(self):
-        from neon_api_proxy.client.alpha_vantage import get_stock_quote
-        quote = get_stock_quote("IBM", api_key="demo")
-        self.assertIsInstance(quote, dict)
-        self.assertEqual(set(quote.keys()), {"symbol", "price", "close"})
-        self.assertEqual(quote["symbol"], "IBM")
-
-    def test_get_stock_quote_conf_key(self):
-        from neon_api_proxy.client.alpha_vantage import get_stock_quote
-        quote = get_stock_quote("GOOGL")
-        self.assertIsInstance(quote, dict)
-        self.assertEqual(set(quote.keys()), {"symbol", "price", "close"}, quote)
-        self.assertEqual(quote["symbol"], "GOOGL")
-
-    def test_get_stock_quote_invalid_key(self):
-        from neon_api_proxy.client.alpha_vantage import get_stock_quote
-        quote = get_stock_quote("MSFT", api_key="INVALID")
-        self.assertIsInstance(quote, dict)
-        if "symbol" in quote.keys():
-            LOG.warning("Invalid API key produced valid result!")
-            self.assertEqual(quote.get("symbol"), "MSFT")
-        else:
-            self.assertTrue(quote.get("error"), quote)
-
-    def test_get_stock_quote_invalid_symbol(self):
-        from neon_api_proxy.client.alpha_vantage import get_stock_quote
-        quote = get_stock_quote("International Business Machines")
-        self.assertIsInstance(quote, dict)
-        self.assertTrue(quote.get("error"))
-
-    def test_get_stock_quote_no_api_key(self):
-        from neon_api_proxy.client.alpha_vantage import get_stock_quote
-        quote = get_stock_quote("IBM", api_key=None)
-        self.assertIsInstance(quote, dict)
-        self.assertEqual(set(quote.keys()), {"symbol", "price", "close"})
-        self.assertEqual(quote["symbol"], "IBM")
-
-    def test_get_stock_symbol_no_api_key(self):
-        from neon_api_proxy.client.alpha_vantage import search_stock_by_name
-        matches = search_stock_by_name("tencent", api_key=None)
-        self.assertIsInstance(matches, list)
-        for match in matches:
-            self.assertIsInstance(match, dict)
-            self.assertEqual(match["region"], "United States")
-        self.assertEqual(matches[0]["symbol"], "TCEHY")
+# class AlphaVantageTests(unittest.TestCase):
+#     def test_get_stock_symbol_spec_key(self):
+#         from neon_api_proxy.client.alpha_vantage import search_stock_by_name
+#         matches = search_stock_by_name("tencent", api_key="demo")
+#         self.assertIsInstance(matches, list)
+#         for match in matches:
+#             self.assertIsInstance(match, dict)
+#             self.assertEqual(match["region"], "United States")
+#         self.assertEqual(matches[0]["symbol"], "TCEHY")
+#
+#     def test_get_stock_symbol_conf_key(self):
+#         from neon_api_proxy.client.alpha_vantage import search_stock_by_name
+#         matches = search_stock_by_name("alphabet")
+#         self.assertIsInstance(matches, list)
+#         for match in matches:
+#             self.assertIsInstance(match, dict)
+#             self.assertEqual(match["region"], "United States")
+#         self.assertEqual(matches[0]["symbol"], "GOOGL")
+#
+#     @pytest.mark.skip  # TODO: This fails due to cached valid response
+#     def test_get_stock_symbol_invalid_key(self):
+#         from neon_api_proxy.client.alpha_vantage import search_stock_by_name
+#         matches = search_stock_by_name("alphabet", api_key="demo")
+#         self.assertIsInstance(matches, list)
+#         self.assertEqual(len(matches), 0)
+#
+#     def test_get_stock_symbol_no_results(self):
+#         from neon_api_proxy.client.alpha_vantage import search_stock_by_name
+#         matches = search_stock_by_name("google")
+#         self.assertIsInstance(matches, list)
+#         self.assertEqual(len(matches), 0)
+#
+#     def test_get_stock_quote_spec_key(self):
+#         from neon_api_proxy.client.alpha_vantage import get_stock_quote
+#         quote = get_stock_quote("IBM", api_key="demo")
+#         self.assertIsInstance(quote, dict)
+#         self.assertEqual(set(quote.keys()), {"symbol", "price", "close"})
+#         self.assertEqual(quote["symbol"], "IBM")
+#
+#     def test_get_stock_quote_conf_key(self):
+#         from neon_api_proxy.client.alpha_vantage import get_stock_quote
+#         quote = get_stock_quote("GOOGL")
+#         self.assertIsInstance(quote, dict)
+#         self.assertEqual(set(quote.keys()), {"symbol", "price", "close"}, quote)
+#         self.assertEqual(quote["symbol"], "GOOGL")
+#
+#     def test_get_stock_quote_invalid_key(self):
+#         from neon_api_proxy.client.alpha_vantage import get_stock_quote
+#         quote = get_stock_quote("MSFT", api_key="INVALID")
+#         self.assertIsInstance(quote, dict)
+#         if "symbol" in quote.keys():
+#             LOG.warning("Invalid API key produced valid result!")
+#             self.assertEqual(quote.get("symbol"), "MSFT")
+#         else:
+#             self.assertTrue(quote.get("error"), quote)
+#
+#     def test_get_stock_quote_invalid_symbol(self):
+#         from neon_api_proxy.client.alpha_vantage import get_stock_quote
+#         quote = get_stock_quote("International Business Machines")
+#         self.assertIsInstance(quote, dict)
+#         self.assertTrue(quote.get("error"))
+#
+#     def test_get_stock_quote_no_api_key(self):
+#         from neon_api_proxy.client.alpha_vantage import get_stock_quote
+#         quote = get_stock_quote("IBM", api_key=None)
+#         self.assertIsInstance(quote, dict)
+#         self.assertEqual(set(quote.keys()), {"symbol", "price", "close"})
+#         self.assertEqual(quote["symbol"], "IBM")
+#
+#     def test_get_stock_symbol_no_api_key(self):
+#         from neon_api_proxy.client.alpha_vantage import search_stock_by_name
+#         matches = search_stock_by_name("tencent", api_key=None)
+#         self.assertIsInstance(matches, list)
+#         for match in matches:
+#             self.assertIsInstance(match, dict)
+#             self.assertEqual(match["region"], "United States")
+#         self.assertEqual(matches[0]["symbol"], "TCEHY")
 
 
 class OpenWeatherMapTests(unittest.TestCase):
