@@ -45,6 +45,8 @@ class MapMakerAPI(CachedAPI):
     def __init__(self, api_key: str = None, cache_seconds=604800):  # Cache week
         super().__init__("map_maker")
         self._api_key = api_key or getenv("MAP_MAKER_KEY")
+        if self._api_key is None:
+            raise RuntimeError(f"No API key provided for Map Maker")
         self._rate_limit_seconds = 1
         self._last_query = time()
         self.cache_timeout = timedelta(seconds=cache_seconds)
