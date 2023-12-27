@@ -29,8 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements/requirements.txt
-          pip install -r requirements/test_requirements.txt
+          pip install . -r requirements/test_requirements.txt
       - name: Export credentials
         run: |
           mkdir -p ~/.local/share/neon
@@ -42,6 +41,7 @@ jobs:
           WOLFRAM_ID: ${{secrets.wolfram_id}}
           AV_API_KEY: ${{secrets.alpha_vantage_key}}
           OWM_KEY: ${{secrets.open_weather_map_key}}
+          MAP_MAKER_KEY: ${{secrets.map_maker_key}}
           GENERIC_CONTROLLER_CONFIG: ${{secrets.generic_controller_config}}
       - name: Test Cached API
         run: |
@@ -78,6 +78,15 @@ jobs:
         with:
           name: owm-api-test-results
           path: tests/owm-api-test-results.xml
+
+      - name: Test Map Maker API
+        run: |
+          pytest tests/test_map_maker_api.py --doctest-modules --junitxml=tests/map-maker-api-test-results.xml
+      - name: Upload Map Maker API test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: map-maker-api-test-results
+          path: tests/map-maker-api-test-results.xml
 
       - name: Test Generic API
         run: |

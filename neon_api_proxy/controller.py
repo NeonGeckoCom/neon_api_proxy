@@ -31,6 +31,8 @@ from ovos_utils.log import LOG
 from ovos_config.config import Configuration
 from neon_utils.configuration_utils import NGIConfig
 from ovos_config.locations import get_xdg_config_save_path
+
+from neon_api_proxy.services.map_maker_api import MapMakerAPI
 from neon_api_proxy.services.owm_api import OpenWeatherAPI
 from neon_api_proxy.services.alpha_vantage_api import AlphaVantageAPI
 from neon_api_proxy.services.wolfram_api import WolframAPI
@@ -47,6 +49,7 @@ class NeonAPIProxyController:
         'wolfram_alpha': WolframAPI,
         'alpha_vantage': AlphaVantageAPI,
         'open_weather_map': OpenWeatherAPI,
+        'map_maker': MapMakerAPI,
         'api_test_endpoint': TestAPI
     }
 
