@@ -84,7 +84,8 @@ class NeonAPIClientTests(unittest.TestCase):
     def test_client_init_no_keys(self):
         from neon_api_proxy.client import NeonAPIProxyClient
         client = NeonAPIProxyClient({"test": "test"})
-        self.assertEqual(set(client.service_instance_mapping.keys()), {"api_test_endpoint"})
+        self.assertEqual(set(client.service_instance_mapping.keys()),
+                         {"api_test_endpoint"})
 
     def test_client_lazy_load(self):
         from neon_api_proxy.client import NeonAPI, request_api

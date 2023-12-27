@@ -66,7 +66,7 @@ class NeonAPIProxyController:
         from neon_api_proxy.config import get_proxy_config
         legacy_config = get_proxy_config()
         if legacy_config:
-            return legacy_config
+            return legacy_config.get("SERVICES") or legacy_config
         legacy_config_file = join(get_xdg_config_save_path(),
                                   "ngi_auth_vars.yml")
         if isfile(legacy_config_file):
@@ -85,11 +85,9 @@ class NeonAPIProxyController:
                 and instance of python class representing it
         """
         service_mapping = dict()
-        for item in list(service_class_mapping):
-            api_key = self.config.get("SERVICES",
-                                      self.config).get(item,
-                                                       {}).get("api_key") \
-                if self.config else None
+        for item in service_class_mapping:
+            api_key = self.config.get(item, {}).get("api_key") if self.config \
+                else None
             try:
                 service_mapping[item] = \
                     service_class_mapping[item](api_key=api_key)
