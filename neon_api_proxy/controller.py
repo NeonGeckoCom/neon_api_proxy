@@ -92,7 +92,7 @@ class NeonAPIProxyController:
                 service_mapping[item] = \
                     service_class_mapping[item](api_key=api_key)
             except Exception as e:
-                LOG.info(e)
+                LOG.exception(e)
         return service_mapping
 
     def resolve_query(self, query: dict) -> dict:
