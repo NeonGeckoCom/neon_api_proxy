@@ -91,6 +91,7 @@ class NeonAPIProxyController:
             try:
                 service_mapping[item] = \
                     service_class_mapping[item](api_key=api_key)
+                LOG.warning(f"Initialized with key={api_key}")
             except Exception as e:
                 LOG.error(e)
         return service_mapping
