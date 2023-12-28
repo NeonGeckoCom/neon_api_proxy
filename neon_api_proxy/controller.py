@@ -31,6 +31,8 @@ from ovos_utils.log import LOG
 from ovos_config.config import Configuration
 from neon_utils.configuration_utils import NGIConfig
 from ovos_config.locations import get_xdg_config_save_path
+
+from neon_api_proxy.services.map_maker_api import MapMakerAPI
 from neon_api_proxy.services.owm_api import OpenWeatherAPI
 from neon_api_proxy.services.alpha_vantage_api import AlphaVantageAPI
 from neon_api_proxy.services.wolfram_api import WolframAPI
@@ -47,6 +49,7 @@ class NeonAPIProxyController:
         'wolfram_alpha': WolframAPI,
         'alpha_vantage': AlphaVantageAPI,
         'open_weather_map': OpenWeatherAPI,
+        'map_maker': MapMakerAPI,
         'api_test_endpoint': TestAPI
     }
 
@@ -63,7 +66,7 @@ class NeonAPIProxyController:
         from neon_api_proxy.config import get_proxy_config
         legacy_config = get_proxy_config()
         if legacy_config:
-            return legacy_config
+            return legacy_config.get("SERVICES") or legacy_config
         legacy_config_file = join(get_xdg_config_save_path(),
                                   "ngi_auth_vars.yml")
         if isfile(legacy_config_file):
@@ -82,16 +85,16 @@ class NeonAPIProxyController:
                 and instance of python class representing it
         """
         service_mapping = dict()
-        for item in list(service_class_mapping):
-            api_key = self.config.get("SERVICES",
-                                      self.config).get(item,
-                                                       {}).get("api_key") \
-                if self.config else None
+        for item in service_class_mapping:
+            api_key = self.config.get(item, {}).get("api_key") if self.config \
+                else None
             try:
+                if api_key is None:
+                    LOG.warning(f"No API key for {item} in {self.config}")
                 service_mapping[item] = \
                     service_class_mapping[item](api_key=api_key)
             except Exception as e:
-                LOG.info(e)
+                LOG.error(e)
         return service_mapping
 
     def resolve_query(self, query: dict) -> dict:
