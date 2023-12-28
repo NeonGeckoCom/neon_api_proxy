@@ -305,3 +305,29 @@ class OpenWeatherMapTests(unittest.TestCase):
         self.assertIsInstance(data["minutely"], list)
         self.assertIsInstance(data["hourly"], list)
         self.assertIsInstance(data["daily"], list)
+
+
+class MapMakerTests(unittest.TestCase):
+    def test_get_coordinates(self):
+        from neon_api_proxy.client.map_maker import get_coordinates
+
+        # Valid request
+        lat, lon = get_coordinates("Kirkland")
+        self.assertIsInstance(lat, float)
+        self.assertIsInstance(lon, float)
+
+        # Invalid request
+        with self.assertRaises(RuntimeError):
+            get_coordinates("")
+
+    def test_get_address(self):
+        from neon_api_proxy.client.map_maker import get_address
+
+        # Valid Request
+        address = get_address(VALID_LAT, VALID_LNG)
+        self.assertEqual(address['state'], "Washington")
+        self.assertEqual(address['city'], "Renton", address)
+
+        # Invalid Request
+        with self.assertRaises(RuntimeError):
+            get_address('', '')
