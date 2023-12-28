@@ -74,12 +74,22 @@ class RequestAPITests(unittest.TestCase):
 
 
 class NeonAPIClientTests(unittest.TestCase):
+    map_maker_key = None
+
     @classmethod
     def setUpClass(cls) -> None:
         def _override_find_key(*args, **kwargs):
             raise Exception("Test Exception; no key found")
         import neon_utils.authentication_utils
         neon_utils.authentication_utils.find_generic_keyfile = _override_find_key
+
+        if os.getenv("MAP_MAKER_KEY"):
+            cls.map_maker_key = os.environ.pop("MAP_MAKER_KEY")
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        if cls.map_maker_key:
+            os.environ["MAP_MAKER_KEY"] = cls.map_maker_key
 
     def test_client_init_no_keys(self):
         from neon_api_proxy.client import NeonAPIProxyClient
