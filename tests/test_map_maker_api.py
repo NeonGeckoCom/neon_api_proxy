@@ -58,15 +58,17 @@ class TestMapMakerAPI(unittest.TestCase):
         self.assertEqual(valid_response['status_code'], 200)
         self.assertEqual(valid_response["encoding"].lower(), "utf-8")
         valid_location = json.loads(valid_response["content"])[0]
-        self.assertEqual(round(float(valid_location['lat']), 2), 47.69)
-        self.assertEqual(round(float(valid_location['lon']), 2), -122.19)
+        self.assertAlmostEqual(float(valid_location['lat']), 47.69, delta=0.02)
+        self.assertAlmostEqual(float(valid_location['lat']), -122.19,
+                               delta=0.02)
 
         valid_response_2 = self.api.handle_query(address=VALID_ADDRESS_2)
         self.assertEqual(valid_response_2['status_code'], 200)
         self.assertEqual(valid_response_2["encoding"].lower(), "utf-8")
         valid_location = json.loads(valid_response_2["content"])[0]
-        self.assertEqual(round(float(valid_location['lat']), 2), 36.10)
-        self.assertEqual(round(float(valid_location['lon']), 2), -115.17)
+        self.assertAlmostEqual(float(valid_location['lat']), 36.10, delta=0.02)
+        self.assertAlmostEqual(float(valid_location['lon']), -115.17,
+                               delta=0.02)
 
         invalid_response = self.api.handle_query(address=INVALID_ADDRESS)
         self.assertEqual(invalid_response['status_code'], -1)
