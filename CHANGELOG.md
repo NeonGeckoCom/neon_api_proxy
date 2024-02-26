@@ -1,20 +1,20 @@
 # Changelog
 
-## [0.4.2a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.2a1) (2023-07-04)
+## [0.4.3a2](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.3a2) (2024-02-26)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.1a1...0.4.2a1)
-
-**Merged pull requests:**
-
-- Fix unit test automation to run on PR to `master` [\#86](https://github.com/NeonGeckoCom/neon_api_proxy/pull/86) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [0.4.1a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.1a1) (2023-07-04)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.0...0.4.1a1)
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.3a1...0.4.3a2)
 
 **Merged pull requests:**
 
-- Add docker publication to release workflow [\#84](https://github.com/NeonGeckoCom/neon_api_proxy/pull/84) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update geolocation tests [\#91](https://github.com/NeonGeckoCom/neon_api_proxy/pull/91) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [0.4.3a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.3a1) (2023-12-28)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.2...0.4.3a1)
+
+**Merged pull requests:**
+
+- Add Map Maker API with unit tests [\#88](https://github.com/NeonGeckoCom/neon_api_proxy/pull/88) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
