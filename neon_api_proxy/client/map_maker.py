@@ -26,4 +26,47 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__version__ = "0.5.0"
+import json
+
+from ovos_utils.log import LOG
+from neon_api_proxy.client import NeonAPI, request_api
+
+
+def get_coordinates(location: str) -> (float, float):
+    """
+    Get coordinates for the requested location
+    @param location: Search term, i.e. City, Address, Landmark
+    @returns: coordinate latitude, longitude
+    """
+    resp = _make_api_call({'address': location})
+    if resp['status_code'] != 200:
+        raise RuntimeError(f"API Request failed: {resp['content']}")
+    coords = resp['content'][0]['lat'], resp['content'][0]['lon']
+    LOG.info(f"Resolved: {coords}")
+    return float(coords[0]), float(coords[1])
+
+
+def get_address(lat: float, lon: float) -> dict:
+    """
+    Get a dict location for the specified coordinates
+    @param lat: latitude of point to look up
+    @param lon: longitude of point to look up
+    @returns: dict location (equivalent to Geopy Location.raw)
+    """
+    resp = _make_api_call({'lat': lat, "lon": lon})
+    if resp['status_code'] != 200:
+        raise RuntimeError(f"API Request failed: {resp['content']}")
+    address = resp['content']['address']
+    if not address.get('city'):
+        LOG.debug(f"Response missing city, trying to find alternate tag in: "
+                  f"{address.keys()}")
+        address['city'] = address.get('town') or address.get('village')
+    LOG.info(f"Resolved: {address}")
+    return address
+
+
+def _make_api_call(request_data: dict) -> dict:
+    resp = request_api(NeonAPI.MAP_MAKER, request_data)
+    if resp['status_code'] == 200:
+        resp['content'] = json.loads(resp['content'])
+    return resp

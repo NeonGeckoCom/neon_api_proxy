@@ -74,17 +74,28 @@ class RequestAPITests(unittest.TestCase):
 
 
 class NeonAPIClientTests(unittest.TestCase):
+    map_maker_key = None
+
     @classmethod
     def setUpClass(cls) -> None:
         def _override_find_key(*args, **kwargs):
-            raise Exception
+            raise Exception("Test Exception; no key found")
         import neon_utils.authentication_utils
         neon_utils.authentication_utils.find_generic_keyfile = _override_find_key
+
+        if os.getenv("MAP_MAKER_KEY"):
+            cls.map_maker_key = os.environ.pop("MAP_MAKER_KEY")
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        if cls.map_maker_key:
+            os.environ["MAP_MAKER_KEY"] = cls.map_maker_key
 
     def test_client_init_no_keys(self):
         from neon_api_proxy.client import NeonAPIProxyClient
         client = NeonAPIProxyClient({"test": "test"})
-        self.assertEqual(set(client.service_instance_mapping.keys()), {"api_test_endpoint"})
+        self.assertEqual(set(client.service_instance_mapping.keys()),
+                         {"api_test_endpoint"})
 
     def test_client_lazy_load(self):
         from neon_api_proxy.client import NeonAPI, request_api
@@ -294,3 +305,29 @@ class OpenWeatherMapTests(unittest.TestCase):
         self.assertIsInstance(data["minutely"], list)
         self.assertIsInstance(data["hourly"], list)
         self.assertIsInstance(data["daily"], list)
+
+
+class MapMakerTests(unittest.TestCase):
+    def test_get_coordinates(self):
+        from neon_api_proxy.client.map_maker import get_coordinates
+
+        # Valid request
+        lat, lon = get_coordinates("Kirkland")
+        self.assertIsInstance(lat, float)
+        self.assertIsInstance(lon, float)
+
+        # Invalid request
+        with self.assertRaises(RuntimeError):
+            get_coordinates("")
+
+    def test_get_address(self):
+        from neon_api_proxy.client.map_maker import get_address
+
+        # Valid Request
+        address = get_address(VALID_LAT, VALID_LNG)
+        self.assertEqual(address['state'], "Washington")
+        self.assertEqual(address['city'], "Renton", address)
+
+        # Invalid Request
+        with self.assertRaises(RuntimeError):
+            get_address('', '')
