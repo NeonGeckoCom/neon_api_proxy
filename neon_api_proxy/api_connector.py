@@ -76,8 +76,8 @@ class NeonAPIMQConnector(MQConnector):
                 LOG.info(f"request={request}")
 
                 respond = self.proxy.resolve_query(request)
-                LOG.info(f"message={message_id} "
-                         f"status={respond.get('status_code')}")
+                LOG.debug(f"response message={message_id} "
+                          f"status={respond.get('status_code')}")
 
                 try:
                     respond['content'] = bytes(respond.get('content', b'')).\
@@ -121,7 +121,7 @@ class NeonAPIMQConnector(MQConnector):
             tokens['message_id'] = tokens['replied_message'] = \
                 msg_data.get('messageID', None)
         else:
-            LOG.warning('Failed to resolve an agent from the message data')
+            LOG.debug('No valid agent specified in the message data')
         return tokens
 
     def handle_error(self, thread, exception):
