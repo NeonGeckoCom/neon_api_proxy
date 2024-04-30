@@ -84,31 +84,31 @@ class MapMakerAPI(CachedAPI):
         if lat and lon:
             # Lookup address for coordinates
             try:
-                response = self._query_reverse(float(lat), float(lon), lang)
+                response = self._query_reverse(float(lat), float(lon))
             except ValueError as e:
                 return {"status_code": -1,
                         "content": repr(e),
                         "encoding": None}
         else:
             # Lookup coordinates for search term/address
-            response = self._query_geocode(address, lang)
+            response = self._query_geocode(address)
         self._last_query = time()
+        language = response.headers.get('Content-Language')
+        if language != lang:
+            # TODO: Translate?
+            LOG.warning(f"Response not translated to {lang}")
         return {"status_code": response.status_code,
                 "content": response.content,
                 "encoding": response.encoding}
 
-    def _query_geocode(self, address: str, lang: str) -> Response:
-        self.session.headers['Content-Language'] = lang
+    def _query_geocode(self, address: str) -> Response:
         query_str = urllib.parse.urlencode({"q": address,
-                                            "api_key": self._api_key,
-                                            "lang": lang})
+                                            "api_key": self._api_key})
         request_url = f"{self.geocode_url}?{query_str}"
         return self.get_with_cache_timeout(request_url, self.cache_timeout)
 
-    def _query_reverse(self, lat: float, lon: float, lang: str):
-        self.session.headers['Content-Language'] = lang
+    def _query_reverse(self, lat: float, lon: float):
         query_str = urllib.parse.urlencode({"lat": lat, "lon": lon,
-                                            "api_key": self._api_key,
-                                            "lang": lang})
+                                            "api_key": self._api_key})
         request_url = f"{self.reverse_url}?{query_str}"
         return self.get_with_cache_timeout(request_url, self.cache_timeout)
