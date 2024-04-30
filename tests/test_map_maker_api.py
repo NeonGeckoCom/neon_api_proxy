@@ -71,12 +71,12 @@ class TestMapMakerAPI(unittest.TestCase):
                                delta=0.02)
 
         # Test language
-        valid_es_location = self.api.handle_query(address=VALID_ADDRESS,
-                                                  lang_code="es-us")
+        valid_es_location = self.api.handle_query(address=VALID_ADDRESS_2,
+                                                  lang_code="es")
         self.assertEqual(valid_es_location['status_code'], 200)
         self.assertEqual(valid_es_location["encoding"].lower(), "utf-8")
         es_location = json.loads(valid_es_location["content"])[0]
-        # self.assertNotEqual(valid_location, es_location)
+        self.assertNotEqual(valid_location, es_location)
         self.assertEqual(valid_location['lat'], es_location['lat'], es_location)
         self.assertEqual(valid_location['lon'], es_location['lon'], es_location)
 
