@@ -98,7 +98,7 @@ class MapMakerAPI(CachedAPI):
                 "encoding": response.encoding}
 
     def _query_geocode(self, address: str, lang: str) -> Response:
-        self.session.headers['Accept-Language'] = lang
+        self.session.headers['Content-Language'] = lang
         query_str = urllib.parse.urlencode({"q": address,
                                             "api_key": self._api_key,
                                             "lang": lang})
@@ -106,7 +106,7 @@ class MapMakerAPI(CachedAPI):
         return self.get_with_cache_timeout(request_url, self.cache_timeout)
 
     def _query_reverse(self, lat: float, lon: float, lang: str):
-        self.session.headers['Accept-Language'] = lang
+        self.session.headers['Content-Language'] = lang
         query_str = urllib.parse.urlencode({"lat": lat, "lon": lon,
                                             "api_key": self._api_key,
                                             "lang": lang})
