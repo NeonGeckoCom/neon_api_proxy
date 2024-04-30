@@ -59,6 +59,7 @@ class MapMakerAPI(CachedAPI):
         :param kwargs:
           'lat' - optional str latitude
           'lon' - optional str longitude
+          'lang_code' - optional language code to request results in
           'address' - optional string address/place to resolve
         :return: dict containing `status_code`, `content`, `encoding`
             from URL response
@@ -99,13 +100,15 @@ class MapMakerAPI(CachedAPI):
     def _query_geocode(self, address: str, lang: str) -> Response:
         self.session.headers['Accept-Language'] = lang
         query_str = urllib.parse.urlencode({"q": address,
-                                            "api_key": self._api_key})
+                                            "api_key": self._api_key,
+                                            "lang": lang})
         request_url = f"{self.geocode_url}?{query_str}"
         return self.get_with_cache_timeout(request_url, self.cache_timeout)
 
     def _query_reverse(self, lat: float, lon: float, lang: str):
         self.session.headers['Accept-Language'] = lang
         query_str = urllib.parse.urlencode({"lat": lat, "lon": lon,
-                                            "api_key": self._api_key})
+                                            "api_key": self._api_key,
+                                            "lang": lang})
         request_url = f"{self.reverse_url}?{query_str}"
         return self.get_with_cache_timeout(request_url, self.cache_timeout)
