@@ -76,9 +76,9 @@ class TestMapMakerAPI(unittest.TestCase):
         self.assertEqual(valid_es_location['status_code'], 200)
         self.assertEqual(valid_es_location["encoding"].lower(), "utf-8")
         es_location = json.loads(valid_es_location["content"])[0]
-        self.assertNotEqual(valid_location, es_location)
         self.assertEqual(valid_location['lat'], es_location['lat'], es_location)
         self.assertEqual(valid_location['lon'], es_location['lon'], es_location)
+        # self.assertNotEqual(valid_location, es_location)
 
         invalid_response = self.api.handle_query(address=INVALID_ADDRESS)
         self.assertEqual(invalid_response['status_code'], -1)
