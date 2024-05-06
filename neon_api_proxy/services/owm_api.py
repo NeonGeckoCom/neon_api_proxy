@@ -61,7 +61,7 @@ class OpenWeatherAPI(CachedAPI):
         lng = kwargs.get("lng", kwargs.get("lon"))
         api = kwargs.get('api') or "onecall"
         lang = kwargs.get('lang') or "en"
-        units = "metric" if kwargs.get("units", kwargs.get("unit")) == "metric" else "imperial"
+        units = "metric" if kwargs.get("units") == "metric" else "imperial"
 
         if not all((lat, lng, units)):
             return {"status_code": -1,
@@ -88,7 +88,7 @@ class OpenWeatherAPI(CachedAPI):
         except AssertionError as e:
             raise ValueError(e)
         if api != "onecall":
-            log_deprecation(f"`{api}` was requested but only `onecall` "
+            log_deprecation(f"{api} was requested but only `onecall` "
                             f"is supported", "1.0.0")
             api = "onecall"
         assert units in ("metric", "imperial", "standard")
