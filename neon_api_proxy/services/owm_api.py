@@ -74,7 +74,8 @@ class OpenWeatherAPI(CachedAPI):
                     "content": repr(e),
                     "encoding": None}
         if not resp.ok:
-            LOG.error(f"Bad response code: {resp.status_code}")
+            LOG.error(f"Bad response code: {resp.status_code}: "
+                      f"content={resp.content}")
         return {"status_code": resp.status_code,
                 "content": resp.content,
                 "encoding": resp.encoding}
