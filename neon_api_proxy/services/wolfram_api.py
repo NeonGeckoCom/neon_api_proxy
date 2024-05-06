@@ -92,7 +92,7 @@ class WolframAPI(CachedAPI):
         query_params = dict()
         query_params['i'] = kwargs.get("query")
         query_params['units'] = kwargs.get("units") if \
-            kwargs.get("units") == "metric" else "imperial"
+            kwargs.get("units", kwargs.get("unit")) == "metric" else "imperial"
         lat = kwargs.get("lat")
         lng = kwargs.get("lng")
         if kwargs.get("latlong"):
