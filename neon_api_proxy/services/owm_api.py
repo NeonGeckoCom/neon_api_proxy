@@ -82,6 +82,11 @@ class OpenWeatherAPI(CachedAPI):
 
     def _get_api_response(self, lat: str, lng: str, units: str,
                           api: str = "onecall", lang: str = "en") -> Response:
+        try:
+            assert isinstance(float(lat), float), f"Invalid latitude: {lat}"
+            assert isinstance(float(lng), float), f"Invalid longitude: {lng}"
+        except AssertionError as e:
+            raise ValueError(e)
         if api != "onecall":
             log_deprecation(f"{api} was requested but only `onecall` "
                             f"is supported", "1.0.0")
