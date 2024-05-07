@@ -39,12 +39,12 @@ VALID_QUERY_IP = {"query": "how far away is Moscow?",
                   "ip": "50.47.129.133"}
 
 VALID_QUERY_LAT_LON = {"query": "how far away is new york?",
-                       "units": "nonmetric",
+                       "units": "imperial",
                        "lat": "47.4797",
                        "lng": "122.2079"}
 
 VALID_QUERY_LAT_LON_IP = {"query": "how far away is Bellevue?",
-                          "units": "nonmetric",
+                          "units": "nonmetric",  # Test backwards-compat.
                           "lat": "47.4797",
                           "lng": "122.2079",
                           "ip": "50.47.129.133"}
@@ -86,11 +86,11 @@ class TestWolframAPI(unittest.TestCase):
 
     def test_build_query_string_valid_minimal(self):
         query_str = self.api._build_query_string(**VALID_QUERY_MINIMAL)
-        self.assertEqual(query_str, f"i=how+far+away+is+Miami%3F&units=nonmetric")
+        self.assertEqual(query_str, f"i=how+far+away+is+Miami%3F&units=imperial")
 
     def test_build_query_string_valid_lat_lng(self):
         query_str = self.api._build_query_string(**VALID_QUERY_LAT_LON)
-        self.assertEqual(query_str, f"i=how+far+away+is+new+york%3F&units=nonmetric&latlong=47.4797%2C122.2079")
+        self.assertEqual(query_str, f"i=how+far+away+is+new+york%3F&units=imperial&latlong=47.4797%2C122.2079")
 
     def test_build_query_string_valid_ip(self):
         query_str = self.api._build_query_string(**VALID_QUERY_IP)
@@ -98,7 +98,7 @@ class TestWolframAPI(unittest.TestCase):
 
     def test_build_query_string_valid_lat_lng_ip(self):
         query_str = self.api._build_query_string(**VALID_QUERY_LAT_LON_IP)
-        self.assertEqual(query_str, f"i=how+far+away+is+Bellevue%3F&units=nonmetric&latlong=47.4797%2C122.2079")
+        self.assertEqual(query_str, f"i=how+far+away+is+Bellevue%3F&units=imperial&latlong=47.4797%2C122.2079")
 
     def test_build_query_invalid_query(self):
         with self.assertRaises(ValueError):
