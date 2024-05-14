@@ -32,6 +32,7 @@ from ovos_config.config import Configuration
 from neon_utils.configuration_utils import NGIConfig
 from ovos_config.locations import get_xdg_config_save_path
 
+from neon_api_proxy.services.ip_geolocation_api import IpGeolocationAPI
 from neon_api_proxy.services.map_maker_api import MapMakerAPI
 from neon_api_proxy.services.owm_api import OpenWeatherAPI
 from neon_api_proxy.services.alpha_vantage_api import AlphaVantageAPI
@@ -50,6 +51,7 @@ class NeonAPIProxyController:
         'alpha_vantage': AlphaVantageAPI,
         'open_weather_map': OpenWeatherAPI,
         'map_maker': MapMakerAPI,
+        "ip_api": IpGeolocationAPI,
         'api_test_endpoint': TestAPI
     }
 
@@ -89,7 +91,8 @@ class NeonAPIProxyController:
             api_key = self.config.get(item, {}).get("api_key") if self.config \
                 else None
             try:
-                if api_key is None and item != 'api_test_endpoint':
+                if api_key is None and item not in ('api_test_endpoint',
+                                                    "ip_api"):
                     LOG.warning(f"No API key for {item} in "
                                 f"{list(self.config.keys())}")
                 service_mapping[item] = \

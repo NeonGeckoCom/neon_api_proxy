@@ -331,3 +331,26 @@ class MapMakerTests(unittest.TestCase):
         # Invalid Request
         with self.assertRaises(RuntimeError):
             get_address('', '')
+
+
+class IpGeolocationTests(unittest.TestCase):
+    def test_geolocate(self):
+        from neon_api_proxy.client.ip_geolocation import get_location
+        WA_IP = '50.47.222.4'
+        DO_IP = '146.190.53.128'
+        INVALID_IP = '10.0.0.1'
+
+        wa_loc = get_location(WA_IP)
+        ca_loc = get_location(DO_IP)
+        invalid = get_location(INVALID_IP)
+
+        self.assertEqual(wa_loc['status'], 'success')
+        self.assertAlmostEqual(wa_loc['lat'], 48.0, 0)
+        self.assertAlmostEqual(wa_loc['lon'], -122.0, 0)
+
+        self.assertEqual(ca_loc['status'], 'success')
+        self.assertAlmostEqual(ca_loc['lat'], 37.0, 0)
+        self.assertAlmostEqual(ca_loc['lon'], -122.0, 0)
+
+        self.assertEqual(invalid['status'], 'fail')
+        self.assertIsInstance(invalid['message'], str, invalid)

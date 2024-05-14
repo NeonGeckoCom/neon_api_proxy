@@ -43,6 +43,7 @@ class NeonAPI(Enum):
     WOLFRAM_ALPHA = "wolfram_alpha"
     MAP_MAKER = "map_maker"
     FINANCIAL_MODELING_PREP = "financial_modeling_prep"
+    IP_API = "ip_api"
     NOT_IMPLEMENTED = "not_implemented"
     TEST_API = "api_test_endpoint"
 
