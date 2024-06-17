@@ -1,20 +1,37 @@
 # Changelog
 
-## [0.4.3a2](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.3a2) (2024-02-26)
+## [0.6.0](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.6.0) (2024-06-17)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.3a1...0.4.3a2)
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.5.1a3...0.6.0)
+
+**Implemented enhancements:**
+
+- \[FEAT\] Add Daily and Hourly Weather API calls [\#71](https://github.com/NeonGeckoCom/neon_api_proxy/issues/71)
+- Handle requests for unauthenticated APIs [\#21](https://github.com/NeonGeckoCom/neon_api_proxy/issues/21)
+
+## [0.5.1a3](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.5.1a3) (2024-05-07)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.5.1a2...0.5.1a3)
 
 **Merged pull requests:**
 
-- Update geolocation tests [\#91](https://github.com/NeonGeckoCom/neon_api_proxy/pull/91) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update W|A and OWM wrappers to match upstream APIs [\#96](https://github.com/NeonGeckoCom/neon_api_proxy/pull/96) ([NeonDaniel](https://github.com/NeonDaniel))
 
-## [0.4.3a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.4.3a1) (2023-12-28)
+## [0.5.1a2](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.5.1a2) (2024-04-25)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.4.2...0.4.3a1)
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.5.1a1...0.5.1a2)
 
 **Merged pull requests:**
 
-- Add Map Maker API with unit tests [\#88](https://github.com/NeonGeckoCom/neon_api_proxy/pull/88) ([NeonDaniel](https://github.com/NeonDaniel))
+- feat: allow ovos-utils 0.1.0 [\#94](https://github.com/NeonGeckoCom/neon_api_proxy/pull/94) ([mikejgray](https://github.com/mikejgray))
+
+## [0.5.1a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.5.1a1) (2024-04-09)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.5.0...0.5.1a1)
+
+**Merged pull requests:**
+
+- OWM language handling [\#93](https://github.com/NeonGeckoCom/neon_api_proxy/pull/93) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
