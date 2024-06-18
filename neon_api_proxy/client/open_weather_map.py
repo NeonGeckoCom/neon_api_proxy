@@ -104,6 +104,9 @@ def _make_api_call(lat: Union[str, float], lng: Union[str, float],
     except JSONDecodeError:
         data = {"error": "Error decoding response",
                 "response": resp}
+    if data.get('cod') == "400":
+        # Backwards-compat. Put error response under `error` key
+        data["error"] = data.get("message")
     if data.get('cod'):
         data['cod'] = str(data['cod'])
         # TODO: Handle failures

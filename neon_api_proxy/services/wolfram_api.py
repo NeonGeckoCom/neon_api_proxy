@@ -92,7 +92,7 @@ class WolframAPI(CachedAPI):
         query_params = dict()
         query_params['i'] = kwargs.get("query")
         query_params['units'] = kwargs.get("units") if \
-            kwargs.get("units") == "metric" else "nonmetric"
+            kwargs.get("units") == "metric" else "imperial"
         lat = kwargs.get("lat")
         lng = kwargs.get("lng")
         if kwargs.get("latlong"):
@@ -156,6 +156,7 @@ class WolframAPI(CachedAPI):
         :return: dict response containing:
             `status_code`, `content`, and `encoding`
         """
+        LOG.debug(f"query={query}")
         result = self.get_with_cache_timeout(query, timeout=self.cache_time)
         if not result.ok:
             # 501 = Wolfram couldn't understand

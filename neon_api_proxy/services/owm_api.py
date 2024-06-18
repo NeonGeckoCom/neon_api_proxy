@@ -32,7 +32,7 @@ from datetime import timedelta
 from requests import Response
 
 from neon_api_proxy.cached_api import CachedAPI
-from ovos_utils.log import LOG
+from ovos_utils.log import LOG, log_deprecation
 from neon_utils.authentication_utils import find_neon_owm_key
 
 
@@ -60,6 +60,7 @@ class OpenWeatherAPI(CachedAPI):
         lat = kwargs.get("lat")
         lng = kwargs.get("lng", kwargs.get("lon"))
         api = kwargs.get('api') or "onecall"
+        lang = kwargs.get('lang') or "en"
         units = "metric" if kwargs.get("units") == "metric" else "imperial"
 
         if not all((lat, lng, units)):
@@ -67,28 +68,37 @@ class OpenWeatherAPI(CachedAPI):
                     "content": f"Missing required args in: {kwargs}",
                     "encoding": None}
         try:
-            resp = self._get_api_response(lat, lng, units, api)
+            resp = self._get_api_response(lat, lng, units, api, lang)
         except Exception as e:
             return {"status_code": -1,
                     "content": repr(e),
                     "encoding": None}
         if not resp.ok:
-            LOG.error(f"Bad response code: {resp.status_code}")
+            LOG.error(f"Bad response code: {resp.status_code}: "
+                      f"content={resp.content}")
         return {"status_code": resp.status_code,
                 "content": resp.content,
                 "encoding": resp.encoding}
 
     def _get_api_response(self, lat: str, lng: str, units: str,
-                          api: str = "onecall") -> Response:
-        str(float(lat))
-        str(float(lng))
+                          api: str = "onecall", lang: str = "en") -> Response:
+        try:
+            assert isinstance(float(lat), float), f"Invalid latitude: {lat}"
+            assert isinstance(float(lng), float), f"Invalid longitude: {lng}"
+        except AssertionError as e:
+            raise ValueError(e)
+        if api != "onecall":
+            log_deprecation(f"{api} was requested but only `onecall` "
+                            f"is supported", "1.0.0")
+            api = "onecall"
         assert units in ("metric", "imperial", "standard")
         query_params = {"lat": lat,
                         "lon": lng,
                         "appid": self._api_key,
-                        "units": units}
+                        "units": units,
+                        "lang": lang}
         query_str = urllib.parse.urlencode(query_params)
-        base_url = "http://api.openweathermap.org/data/2.5"
+        base_url = "http://api.openweathermap.org/data/3.0"
         resp = self.get_with_cache_timeout(f"{base_url}/{api}?{query_str}",
                                            self.cache_timeout)
         return resp

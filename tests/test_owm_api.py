@@ -112,6 +112,13 @@ class TestOpenWeatherAPI(unittest.TestCase):
         self.assertEqual(resp["encoding"], "utf-8")
         self.assertIsInstance(json.loads(resp["content"]), dict)
 
+        spanish = self.api.handle_query(**VALID_QUERY_ONECALL, lang="es")
+        self.assertIsInstance(spanish, dict)
+        self.assertEqual(spanish["status_code"], 200)
+        self.assertEqual(spanish["encoding"], "utf-8")
+        self.assertIsInstance(json.loads(spanish["content"]), dict)
+        self.assertNotEqual(spanish, resp)
+
     def test_handle_query_valid_current(self):
         resp = self.api.handle_query(**VALID_QUERY_CURRENT)
         self.assertIsInstance(resp, dict)

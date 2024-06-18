@@ -89,8 +89,9 @@ class NeonAPIProxyController:
             api_key = self.config.get(item, {}).get("api_key") if self.config \
                 else None
             try:
-                if api_key is None:
-                    LOG.warning(f"No API key for {item} in {self.config}")
+                if api_key is None and item != 'api_test_endpoint':
+                    LOG.warning(f"No API key for {item} in "
+                                f"{list(self.config.keys())}")
                 service_mapping[item] = \
                     service_class_mapping[item](api_key=api_key)
             except Exception as e:
