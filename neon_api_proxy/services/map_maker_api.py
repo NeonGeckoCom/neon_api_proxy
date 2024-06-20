@@ -59,6 +59,7 @@ class MapMakerAPI(CachedAPI):
         :param kwargs:
           'lat' - optional str latitude
           'lon' - optional str longitude
+          'lang_code' - optional language code to request results in
           'address' - optional string address/place to resolve
         :return: dict containing `status_code`, `content`, `encoding`
             from URL response
@@ -66,7 +67,7 @@ class MapMakerAPI(CachedAPI):
         lat = kwargs.get("lat")
         lon = kwargs.get("lon", kwargs.get("lng"))
         address = kwargs.get('address')
-
+        lang = kwargs.get('lang_code', "en")
         if not (address or (lat and lon)):
             # Missing data for lookup
             return {"status_code": -1,
@@ -83,27 +84,34 @@ class MapMakerAPI(CachedAPI):
         if lat and lon:
             # Lookup address for coordinates
             try:
-                response = self._query_reverse(float(lat), float(lon))
+                response = self._query_reverse(float(lat), float(lon), lang)
             except ValueError as e:
                 return {"status_code": -1,
                         "content": repr(e),
                         "encoding": None}
         else:
             # Lookup coordinates for search term/address
-            response = self._query_geocode(address)
+            response = self._query_geocode(address, lang)
         self._last_query = time()
+        resp_lang = response.headers.get('Content-Language')
+        if resp_lang != lang:
+            # TODO: Translate?
+            LOG.warning(f"Response not translated to {lang}")
         return {"status_code": response.status_code,
                 "content": response.content,
                 "encoding": response.encoding}
 
-    def _query_geocode(self, address: str) -> Response:
-        query_str = urllib.parse.urlencode({"q": address,
+    def _query_geocode(self, address: str, lang: str) -> Response:
+        self.session.headers["Content-Language"] = lang
+        query_str = urllib.parse.urlencode({"q": address, "lang": lang,
                                             "api_key": self._api_key})
         request_url = f"{self.geocode_url}?{query_str}"
         return self.get_with_cache_timeout(request_url, self.cache_timeout)
 
-    def _query_reverse(self, lat: float, lon: float):
+    def _query_reverse(self, lat: float, lon: float, lang: str):
+        self.session.headers["Content-Language"] = lang
         query_str = urllib.parse.urlencode({"lat": lat, "lon": lon,
+                                            "lang": lang,
                                             "api_key": self._api_key})
         request_url = f"{self.reverse_url}?{query_str}"
         return self.get_with_cache_timeout(request_url, self.cache_timeout)

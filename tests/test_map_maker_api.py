@@ -70,6 +70,16 @@ class TestMapMakerAPI(unittest.TestCase):
         self.assertAlmostEqual(float(valid_location['lon']), -115.17,
                                delta=0.02)
 
+        # Test language
+        valid_es_location = self.api.handle_query(address=VALID_ADDRESS_2,
+                                                  lang_code="es")
+        self.assertEqual(valid_es_location['status_code'], 200)
+        self.assertEqual(valid_es_location["encoding"].lower(), "utf-8")
+        es_location = json.loads(valid_es_location["content"])[0]
+        self.assertEqual(valid_location['lat'], es_location['lat'], es_location)
+        self.assertEqual(valid_location['lon'], es_location['lon'], es_location)
+        # self.assertNotEqual(valid_location, es_location)
+
         invalid_response = self.api.handle_query(address=INVALID_ADDRESS)
         self.assertEqual(invalid_response['status_code'], -1)
 
@@ -80,6 +90,14 @@ class TestMapMakerAPI(unittest.TestCase):
         valid_location = json.loads(valid_response["content"])['address']
         self.assertEqual(valid_location['state'], "Washington", valid_location)
         self.assertEqual(valid_location['town'], "Renton", valid_location)
+
+        # Test language
+        valid_es_location = self.api.handle_query(lat=VALID_LAT, lon=VALID_LON,
+                                                  lang_code="es")
+        self.assertEqual(valid_es_location['status_code'], 200)
+        self.assertEqual(valid_es_location["encoding"].lower(), "utf-8")
+        es_location = json.loads(valid_es_location["content"])['address']
+        # self.assertNotEqual(valid_location, es_location)
 
         invalid_response = self.api.handle_query(lat=VALID_LAT, lon=None)
         self.assertEqual(invalid_response['status_code'], -1)
