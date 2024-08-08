@@ -42,7 +42,7 @@ class MapMakerAPI(CachedAPI):
     API for querying My Maps API (geocoder.maps.co).
     """
 
-    def __init__(self, api_key: str = None, cache_seconds=604800):  # Cache week
+    def __init__(self, api_key: str = None, cache_seconds: int = 604800, **_):  # Cache week
         super().__init__("map_maker")
         self._api_key = api_key or getenv("MAP_MAKER_KEY")
         if not self._api_key:

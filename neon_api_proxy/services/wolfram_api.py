@@ -51,11 +51,11 @@ class WolframAPI(CachedAPI):
     API for querying Wolfram|Alpha.
     """
 
-    def __init__(self, api_key: str = None):
+    def __init__(self, api_key: str = None, cache_seconds: int = 3600, **_):
         super().__init__("wolfram")
         self._api_key = api_key or find_neon_wolfram_key()
         self.session.allowable_codes = (200, 501)
-        self.cache_time = timedelta(minutes=60)
+        self.cache_time = timedelta(seconds=cache_seconds)
 
     def _build_query_url(self, query_type: QueryUrl, query_arg: str) -> str:
         """

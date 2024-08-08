@@ -30,7 +30,7 @@ from neon_api_proxy.cached_api import CachedAPI
 
 
 class TestAPI(CachedAPI):
-    def __init__(self, api_key: str = None):
+    def __init__(self, api_key: str = None, **_):
         super().__init__("Test")
 
     def handle_query(self, **kwargs) -> dict:

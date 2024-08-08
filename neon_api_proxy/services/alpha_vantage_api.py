@@ -48,10 +48,10 @@ class AlphaVantageAPI(CachedAPI):
     API for querying Alpha Vantage.
     """
 
-    def __init__(self, api_key: str = None):
+    def __init__(self, api_key: str = None, cache_seconds: int = 300, **_):
         super().__init__("alpha_vantage")
         self._api_key = api_key or find_neon_alpha_vantage_key()
-        self.quote_timeout = timedelta(minutes=5)
+        self.quote_timeout = timedelta(seconds=cache_seconds)
 
     def _search_symbol(self, query: str) -> dict:
         if not query:
