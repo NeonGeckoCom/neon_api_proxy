@@ -41,7 +41,7 @@ class OpenWeatherAPI(CachedAPI):
     API for querying Open Weather Map.
     """
 
-    def __init__(self, api_key: str = None, cache_seconds=180):
+    def __init__(self, api_key: str = None, cache_seconds: int = 900, **_):
         super().__init__("open_weather_map")
         self._api_key = api_key or find_neon_owm_key()
         self.cache_timeout = timedelta(seconds=cache_seconds)
