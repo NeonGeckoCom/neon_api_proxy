@@ -71,7 +71,9 @@ class NeonAPIProxyController:
                                   "ngi_auth_vars.yml")
         if isfile(legacy_config_file):
             log_deprecation(f"Legacy configuration found at: {legacy_config_file}. "
-                            f"This will be ignored in future versions.",
+                            f"This will be ignored in future versions. "
+                            f"Default configuration handling will use "
+                            f"~/.config/neon/diana.yaml.",
                             "1.0.0")
             return NGIConfig("ngi_auth_vars").get("api_services") or dict()
         else:
