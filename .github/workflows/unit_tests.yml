@@ -56,7 +56,7 @@ jobs:
       - name: Upload cached API test results
         uses: actions/upload-artifact@v4
         with:
-          name: cached-api-test-results
+          name: cached-api-test-results-${{matrix.python-version}}
           path: tests/cached-api-test-results.xml
 
       - name: Test Wolfram API
@@ -65,7 +65,7 @@ jobs:
       - name: Upload Wolfram API test results
         uses: actions/upload-artifact@v4
         with:
-          name: wolfram-api-test-results
+          name: wolfram-api-test-results-${{matrix.python-version}}
           path: tests/wolfram-api-test-results.xml
 
       - name: Test Alpha Vantage API
@@ -74,7 +74,7 @@ jobs:
       - name: Upload Alpha Vantage API test results
         uses: actions/upload-artifact@v4
         with:
-          name: alphavantage-api-test-results
+          name: alphavantage-api-test-results-${{matrix.python-version}}
           path: tests/alphavantage-api-test-results.xml
 
       - name: Test OWM API
@@ -83,7 +83,7 @@ jobs:
       - name: Upload Open Weather Map API test results
         uses: actions/upload-artifact@v4
         with:
-          name: owm-api-test-results
+          name: owm-api-test-results-${{matrix.python-version}}
           path: tests/owm-api-test-results.xml
 
       - name: Test Map Maker API
@@ -94,7 +94,7 @@ jobs:
       - name: Upload Map Maker API test results
         uses: actions/upload-artifact@v4
         with:
-          name: map-maker-api-test-results
+          name: map-maker-api-test-results-${{matrix.python-version}}
           path: tests/map-maker-api-test-results.xml
 
       - name: Test Generic API
@@ -103,5 +103,5 @@ jobs:
       - name: Upload Generic API test results
         uses: actions/upload-artifact@v4
         with:
-          name: generic-controller-test-results
+          name: generic-controller-test-results-${{matrix.python-version}}
           path: tests/generic-controller-test-results.xml
