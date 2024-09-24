@@ -27,7 +27,7 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from os.path import join, isfile
-from ovos_utils.log import LOG
+from ovos_utils.log import LOG, log_deprecation
 from ovos_config.config import Configuration
 from neon_utils.configuration_utils import NGIConfig
 from ovos_config.locations import get_xdg_config_save_path
@@ -70,10 +70,16 @@ class NeonAPIProxyController:
         legacy_config_file = join(get_xdg_config_save_path(),
                                   "ngi_auth_vars.yml")
         if isfile(legacy_config_file):
-            LOG.warning(f"Legacy configuration found at: {legacy_config_file}")
-            return NGIConfig("ngi_auth_vars").get("api_services", {})
+            log_deprecation(f"Legacy configuration found at: {legacy_config_file}. "
+                            f"This will be ignored in future versions. "
+                            f"Default configuration handling will use "
+                            f"~/.config/neon/diana.yaml.",
+                            "1.0.0")
+            return NGIConfig("ngi_auth_vars").get("api_services") or dict()
         else:
-            return Configuration().get("keys", {}).get("api_services", {})
+            config = Configuration()
+            return config.get("keys", {}).get("api_services") or \
+                config.get("api_services") or dict()
 
     def init_service_instances(self, service_class_mapping: dict) -> dict:
         """
@@ -86,14 +92,14 @@ class NeonAPIProxyController:
         """
         service_mapping = dict()
         for item in service_class_mapping:
-            api_key = self.config.get(item, {}).get("api_key") if self.config \
-                else None
+            service_config = self.config.get(item) or dict()
             try:
-                if api_key is None and item != 'api_test_endpoint':
+                if service_config.get("api_key") is None and item not in \
+                        ('api_test_endpoint', "ip_api"):
                     LOG.warning(f"No API key for {item} in "
                                 f"{list(self.config.keys())}")
                 service_mapping[item] = \
-                    service_class_mapping[item](api_key=api_key)
+                    service_class_mapping[item](**service_config)
             except Exception as e:
                 LOG.error(e)
         return service_mapping

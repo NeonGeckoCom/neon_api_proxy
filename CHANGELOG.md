@@ -1,37 +1,20 @@
 # Changelog
 
-## [0.6.0](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.6.0) (2024-06-17)
+## [0.6.1a2](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.6.1a2) (2024-09-12)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.5.1a3...0.6.0)
-
-**Implemented enhancements:**
-
-- \[FEAT\] Add Daily and Hourly Weather API calls [\#71](https://github.com/NeonGeckoCom/neon_api_proxy/issues/71)
-- Handle requests for unauthenticated APIs [\#21](https://github.com/NeonGeckoCom/neon_api_proxy/issues/21)
-
-## [0.5.1a3](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.5.1a3) (2024-05-07)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.5.1a2...0.5.1a3)
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.6.1a1...0.6.1a2)
 
 **Merged pull requests:**
 
-- Update W|A and OWM wrappers to match upstream APIs [\#96](https://github.com/NeonGeckoCom/neon_api_proxy/pull/96) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update configuration handling [\#99](https://github.com/NeonGeckoCom/neon_api_proxy/pull/99) ([NeonDaniel](https://github.com/NeonDaniel))
 
-## [0.5.1a2](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.5.1a2) (2024-04-25)
+## [0.6.1a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.6.1a1) (2024-08-08)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.5.1a1...0.5.1a2)
-
-**Merged pull requests:**
-
-- feat: allow ovos-utils 0.1.0 [\#94](https://github.com/NeonGeckoCom/neon_api_proxy/pull/94) ([mikejgray](https://github.com/mikejgray))
-
-## [0.5.1a1](https://github.com/NeonGeckoCom/neon_api_proxy/tree/0.5.1a1) (2024-04-09)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.5.0...0.5.1a1)
+[Full Changelog](https://github.com/NeonGeckoCom/neon_api_proxy/compare/0.6.0...0.6.1a1)
 
 **Merged pull requests:**
 
-- OWM language handling [\#93](https://github.com/NeonGeckoCom/neon_api_proxy/pull/93) ([NeonDaniel](https://github.com/NeonDaniel))
+- Refactor backend services to accept more configuration params in init [\#98](https://github.com/NeonGeckoCom/neon_api_proxy/pull/98) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
