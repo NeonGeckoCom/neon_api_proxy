@@ -3,9 +3,10 @@ FROM python:3.10-slim
 LABEL vendor=neon.ai \
     ai.neon.name="neon-api-proxy"
 
-ENV OVOS_CONFIG_BASE_FOLDER neon
-ENV OVOS_CONFIG_FILENAME diana.yaml
-ENV XDG_CONFIG_HOME /config
+ENV OVOS_CONFIG_BASE_FOLDER=neon
+ENV OVOS_CONFIG_FILENAME=diana.yaml
+ENV OVOS_DEFAULT_CONFIG=/opt/neon/diana.yaml
+ENV XDG_CONFIG_HOME=/config
 COPY docker_overlay/ /
 
 RUN apt-get update && \
