@@ -101,6 +101,21 @@ class MapMakerAPI(CachedAPI):
                 "content": response.content,
                 "encoding": response.encoding}
 
+    def _translate_response(self, response: Response, lang: str) -> Response:
+        import json
+        resp_lang = response.headers.get('Content-Language')
+        if lang == resp_lang:
+            LOG.warning(f"Requested translation to the same language ({lang})")
+            return response
+        address = json.loads(response.content.decode(response.encoding))['address']
+        for key, val in address.items():
+            address[key] = str(val)
+
+    def _get_translation(self, to_translate: str, in_lang: str, out_lang: str) -> str:
+        from neon_utils.hana_utils import request_backend
+        # TODO
+        return to_translate
+
     def _query_geocode(self, address: str, lang: str) -> Response:
         self.session.headers["Content-Language"] = lang
         query_str = urllib.parse.urlencode({"q": address, "lang": lang,

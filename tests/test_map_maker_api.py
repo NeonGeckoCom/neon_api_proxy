@@ -92,12 +92,17 @@ class TestMapMakerAPI(unittest.TestCase):
         self.assertEqual(valid_location['town'], "Renton", valid_location)
 
         # Test language
+        valid_german = self.api.handle_query(lat=51.233334, lon=6.783333,
+                                             lang_code="de")
+        self.assertEqual(json.loads(valid_german["content"])['address']['city'],
+                         "Düsseldorf")
+
         valid_es_location = self.api.handle_query(lat=VALID_LAT, lon=VALID_LON,
                                                   lang_code="es")
         self.assertEqual(valid_es_location['status_code'], 200)
         self.assertEqual(valid_es_location["encoding"].lower(), "utf-8")
         es_location = json.loads(valid_es_location["content"])['address']
-        # self.assertNotEqual(valid_location, es_location)
+        self.assertNotEqual(valid_location, es_location)
 
         invalid_response = self.api.handle_query(lat=VALID_LAT, lon=None)
         self.assertEqual(invalid_response['status_code'], -1)
