@@ -49,6 +49,16 @@ VALID_QUERY = {"lat": "47.6769",
                "lng": "-122.2060",
                "units": "imperial"}
 
+VALID_QUERY_ES = {"lat": "47.6769",
+                  "lng": "-122.2060",
+                  "units": "imperial",
+                  "lang": "es"}
+
+VALID_QUERY_ES_MX = {"lat": "47.6769",
+                     "lng": "-122.2060",
+                     "units": "imperial",
+                     "lang": "es-mx"}
+
 VALID_QUERY_ONECALL = {"lat": "47.6769",
                        "lng": "-122.2060",
                        "units": "imperial",
@@ -104,6 +114,15 @@ class TestOpenWeatherAPI(unittest.TestCase):
         self.assertEqual(resp["status_code"], 200)
         self.assertEqual(resp["encoding"], "utf-8")
         self.assertIsInstance(json.loads(resp["content"]), dict)
+
+        resp_es = self.api.handle_query(**VALID_QUERY_ES)
+        self.assertEqual(resp_es["status_code"], 200)
+        self.assertEqual(resp_es["encoding"], "utf-8")
+        self.assertIsInstance(json.loads(resp_es["content"]), dict)
+        self.assertNotEqual(resp, resp_es)
+
+        resp_es_mx = self.api.handle_query(**VALID_QUERY_ES_MX)
+        self.assertEqual(resp_es, resp_es_mx)
 
     def test_handle_query_valid_onecall(self):
         resp = self.api.handle_query(**VALID_QUERY_ONECALL)

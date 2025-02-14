@@ -92,6 +92,7 @@ class OpenWeatherAPI(CachedAPI):
                             f"is supported", "1.0.0")
             api = "onecall"
         assert units in ("metric", "imperial", "standard")
+        lang = lang.split('-')[0]  # `de-de` is treated as `en`
         query_params = {"lat": lat,
                         "lon": lng,
                         "appid": self._api_key,
