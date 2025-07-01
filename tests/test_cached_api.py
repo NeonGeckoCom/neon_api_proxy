@@ -56,7 +56,7 @@ class TestCachedAPI(unittest.TestCase):
         self.assertEqual(res.content, cached.content)
 
     def test_get_with_cache_timeout(self):
-        url = "https://www.chatbotsforum.org"
+        url = "https://chatbotsforum.org"
         res = self.api.get_with_cache_timeout(url, 5)
         self.assertFalse(res.from_cache)
         cached = self.api.get_with_cache_timeout(url, 15)
@@ -67,7 +67,7 @@ class TestCachedAPI(unittest.TestCase):
         self.assertFalse(expired.from_cache)
 
     def test_get_bypass_cache(self):
-        url = "https://chatbotsforum.com"
+        url = "https://www.chatbotsforum.com"
         res = self.api.get_with_cache_timeout(url)
         self.assertFalse(res.from_cache)
         cached = self.api.get_with_cache_timeout(url)
