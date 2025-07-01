@@ -1,6 +1,6 @@
 requests-cache~=0.6,>=0.6.4
 requests~=2.20
-neon-utils[network,sentry]~=1.0
+neon-utils[network,sentry]~=1.0, >=1.12.2a2
 ovos-utils>=0.0.31,<0.2.0
 ovos-config~=0.1
 neon-mq-connector~=0.8,>=0.8.1a3

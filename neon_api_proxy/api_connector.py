@@ -30,6 +30,7 @@ import pika.channel
 
 from typing import Optional
 from ovos_utils.log import LOG
+from ovos_utils.process_utils import ProcessStatus, ProcessState
 from neon_mq_connector.utils.network_utils import b64_to_dict, dict_to_b64
 from neon_mq_connector.connector import MQConnector
 
@@ -48,9 +49,16 @@ class NeonAPIMQConnector(MQConnector):
             :param service_name: name of the service instance
         """
         super().__init__(config, service_name)
-
+        self.status = ProcessStatus(self.service_name)
+        self.status.set_alive()
         self.vhost = '/neon_api'
         self.proxy = proxy
+
+    def check_health(self) -> bool:
+        if not MQConnector.check_health(self):
+            self.status.set_error("MQConnector health check failed")
+            return False
+        return self.status == ProcessState.READY
 
     def handle_api_input(self,
                          channel: pika.channel.Channel,
@@ -126,9 +134,18 @@ class NeonAPIMQConnector(MQConnector):
 
     def handle_error(self, thread, exception):
         LOG.error(f"{exception} occurred in {thread}")
-        LOG.info(f"Restarting Consumers")
+        LOG.info("Restarting Consumers")
         self.stop()
         self.run()
+
+    def stop(self):
+        self.status.set_stopping()
+        MQConnector.stop(self)
+
+    def run(self):
+        MQConnector.run(self)
+        LOG.info("API Connector is running")
+        self.status.set_ready()
 
     def pre_run(self, **kwargs):
         self.register_consumer("neon_api_consumer", self.vhost,
