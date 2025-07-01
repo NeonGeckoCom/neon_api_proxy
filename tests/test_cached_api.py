@@ -48,7 +48,7 @@ class TestCachedAPI(unittest.TestCase):
         self.assertEqual(res.content, cached.content)
 
     def test_request_no_cache(self):
-        url = "https://neon.ai"
+        url = "https://neon.ai/Company"
         res = self.api.session.get(url, timeout=10)
         with self.api.session.cache_disabled():
             cached = self.api.session.get(url, timeout=10)
@@ -67,7 +67,7 @@ class TestCachedAPI(unittest.TestCase):
         self.assertFalse(expired.from_cache)
 
     def test_get_bypass_cache(self):
-        url = "https://klat.com"
+        url = "https://chatbotsforum.com"
         res = self.api.get_with_cache_timeout(url)
         self.assertFalse(res.from_cache)
         cached = self.api.get_with_cache_timeout(url)
