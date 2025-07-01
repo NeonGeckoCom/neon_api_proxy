@@ -67,7 +67,7 @@ class TestCachedAPI(unittest.TestCase):
         self.assertFalse(expired.from_cache)
 
     def test_get_bypass_cache(self):
-        url = "https://www.chatbotsforum.com"
+        url = "https://hana.neonaibeta.com/docs"
         res = self.api.get_with_cache_timeout(url)
         self.assertFalse(res.from_cache)
         cached = self.api.get_with_cache_timeout(url)
