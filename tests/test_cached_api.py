@@ -48,7 +48,7 @@ class TestCachedAPI(unittest.TestCase):
         self.assertEqual(res.content, cached.content)
 
     def test_request_no_cache(self):
-        url = "https://neon.ai/Company"
+        url = "https://hana.neonaiservices.com/docs"
         res = self.api.session.get(url, timeout=10)
         with self.api.session.cache_disabled():
             cached = self.api.session.get(url, timeout=10)
@@ -56,7 +56,7 @@ class TestCachedAPI(unittest.TestCase):
         self.assertEqual(res.content, cached.content)
 
     def test_get_with_cache_timeout(self):
-        url = "https://chatbotsforum.org"
+        url = "https://www.chatbotsforum.org"
         res = self.api.get_with_cache_timeout(url, 5)
         self.assertFalse(res.from_cache)
         cached = self.api.get_with_cache_timeout(url, 15)
