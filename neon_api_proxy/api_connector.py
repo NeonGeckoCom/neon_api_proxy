@@ -30,7 +30,7 @@ import pika.channel
 
 from typing import Optional
 from ovos_utils.log import LOG
-from ovos_utils.process_utils import ProcessStatus, ProcessState
+from ovos_utils.process_utils import ProcessStatus
 from neon_mq_connector.utils.network_utils import b64_to_dict, dict_to_b64
 from neon_mq_connector.connector import MQConnector
 
@@ -58,7 +58,7 @@ class NeonAPIMQConnector(MQConnector):
         if not MQConnector.check_health(self):
             self.status.set_error("MQConnector health check failed")
             return False
-        return self.status == ProcessState.READY
+        return self.status.check_ready()
 
     def handle_api_input(self,
                          channel: pika.channel.Channel,
