@@ -89,6 +89,7 @@ class TestGenericController(unittest.TestCase):
         self.assertIsNotNone(resp)
         self.assertEqual(resp['status_code'], 200)
 
+    @unittest.skip("Redundant with OWM test")
     def test_wolfram_forwarding(self):
         resp = self.controller.resolve_query(VALID_WOLFRAM_QUERY)
         self.assertIsNotNone(resp)
