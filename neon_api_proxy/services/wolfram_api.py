@@ -54,6 +54,8 @@ class WolframAPI(CachedAPI):
     def __init__(self, api_key: str = None, cache_seconds: int = 3600, **_):
         super().__init__("wolfram")
         self._api_key = api_key or find_neon_wolfram_key()
+        if not self._api_key:
+            LOG.error("No Wolfram|Alpha API key provided!")
         self.session.allowable_codes = (200, 501)
         self.cache_time = timedelta(seconds=cache_seconds)
 
@@ -65,9 +67,9 @@ class WolframAPI(CachedAPI):
         :return: valid URL to query for a response
         """
         if not query_type:
-            raise ValueError(f"query_type not defined!")
+            raise ValueError("query_type not defined!")
         if not query_arg:
-            raise ValueError(f"query_url not defined!")
+            raise ValueError("query_url not defined!")
         if not isinstance(query_type, QueryUrl):
             raise TypeError(f"Not a QueryUrl: {query_arg}")
         if not isinstance(query_arg, str):

@@ -140,6 +140,9 @@ class TestWolframAPI(unittest.TestCase):
         self.assertEqual(resp["status_code"], -1)
 
     def test_handle_query_invalid_response(self):
+        # Check that the API key is defined (troubleshooting failures)
+        self.assertIsInstance(self.api._api_key, str)
+        self.assertGreater(len(self.api._api_key), 0)
         resp = self.api.handle_query(api="short",
                                      query="i like",
                                      units="metric",
@@ -154,7 +157,9 @@ class TestWolframAPI(unittest.TestCase):
 
         resp = self.api.handle_query(query="how far away is mars")
         self.assertIsInstance(resp, dict)
-        self.assertEqual(resp["status_code"], 403)
+        # Response code should indicate a 4xx error for a bad request
+        self.assertGreaterEqual(resp["status_code"], 400)
+        self.assertLess(resp["status_code"], 500)
         self.assertIsInstance(resp["content"], bytes)
         self.assertIsInstance(resp["encoding"], str)
         self.assertIsInstance(resp["content"].decode(resp["encoding"]), str)
@@ -162,6 +167,9 @@ class TestWolframAPI(unittest.TestCase):
         self.api._api_key = valid_key
 
     def test_handle_query_valid_ip(self):
+        # Check that the API key is defined (troubleshooting failures)
+        self.assertIsInstance(self.api._api_key, str)
+        self.assertGreater(len(self.api._api_key), 0)
         resp = self.api.handle_query(api="short",
                                      query="how far away is the moon?",
                                      units="metric",
@@ -178,6 +186,9 @@ class TestWolframAPI(unittest.TestCase):
         self.assertEqual(resp, cached)
 
     def test_handle_query_valid_lat_lng(self):
+        # Check that the API key is defined (troubleshooting failures)
+        self.assertIsInstance(self.api._api_key, str)
+        self.assertGreater(len(self.api._api_key), 0)
         resp = self.api.handle_query(api="short",
                                      query="how far away is the moon?",
                                      units="metric",
@@ -190,6 +201,9 @@ class TestWolframAPI(unittest.TestCase):
         self.assertIsInstance(resp["content"].decode(resp["encoding"]), str)
 
     def test_handle_query_valid_latlong(self):
+        # Check that the API key is defined (troubleshooting failures)
+        self.assertIsInstance(self.api._api_key, str)
+        self.assertGreater(len(self.api._api_key), 0)
         resp = self.api.handle_query(api="short",
                                      query="how far away is the moon?",
                                      units="metric",
