@@ -1,5 +1,6 @@
 /config.json
-*.egginfo
+*.egg-info
 build
 dist
 .pytest_cache
+__pycache__
